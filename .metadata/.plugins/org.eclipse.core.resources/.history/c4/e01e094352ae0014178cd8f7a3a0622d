@@ -1,7 +1,6 @@
 package com.example.contramini;
 
 import org.cocos2d.actions.interval.CCMoveBy;
-import org.cocos2d.actions.interval.CCMoveTo;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.nodes.CCDirector;
@@ -13,8 +12,6 @@ import android.view.MotionEvent;
 public class GameLayer extends CCLayer{
 	//declare a sprite;
 	CCSprite player;
-	CCSprite landMonster;
-	
 	CCSprite leftButton;
 	CCSprite rightButton;
 	CCSprite jumpButton;
@@ -25,28 +22,18 @@ public class GameLayer extends CCLayer{
 		//made this layer receive touch event
 		this.setIsTouchEnabled(true);
 		player = CCSprite.sprite("ic_launcher.png");
-		landMonster = CCSprite.sprite("goomba2.png");
 		leftButton = CCSprite.sprite("leftbutton.png");
 		rightButton = CCSprite.sprite("rightbutton.png");
-		jumpButton = CCSprite.sprite("jumpbutton.jpg");
 		CGPoint initPoint = CGPoint.ccp(100, 500);
-		CGPoint landMonsterPosition = CGPoint.ccp(1300, 500);
-		CGPoint LBPosition = CGPoint.ccp(250, 150);
-		CGPoint RBPosition = CGPoint.ccp(750, 150);
-		CGPoint JBPosition = CGPoint.ccp(1500, 150);
-		
+		CGPoint LBPosition = CGPoint.ccp(250, 100);
+		CGPoint RBPosition = CGPoint.ccp(750, 100);
 		this.addChild(player);
 		this.addChild(leftButton);
 		this.addChild(rightButton);
-		this.addChild(jumpButton);
-		this.addChild(landMonster);
 		
 		player.setPosition(initPoint);
-		landMonster.setPosition(landMonsterPosition);
 		leftButton.setPosition(LBPosition);
 		rightButton.setPosition(RBPosition);
-		jumpButton.setPosition(JBPosition);
-		
 		
 		
 	}
@@ -63,12 +50,11 @@ public class GameLayer extends CCLayer{
 		System.out.println("p2.x:"+ p2.x + ".p2.y:" + p2.y);
 		System.out.println("began");
 		
-		float playerX =player.getPosition().x;
 		//jump action
 		CGPoint jumpUpVec = CGPoint.ccp(0, 200);
-		CGPoint jumpDownDestination = CGPoint.ccp(playerX, 500);
+		CGPoint jumpDownVec = CGPoint.ccp(0, -200);
 		CCMoveBy moveUp = CCMoveBy.action(0.5f, jumpUpVec);
-		CCMoveTo moveDown = CCMoveTo.action(0.5f, jumpDownDestination);
+		CCMoveBy moveDown = CCMoveBy.action(0.5f, jumpDownVec);
 		CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
 		
 		
