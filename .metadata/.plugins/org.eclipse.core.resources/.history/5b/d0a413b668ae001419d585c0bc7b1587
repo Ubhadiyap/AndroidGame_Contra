@@ -1,7 +1,5 @@
 package com.example.contramini;
 
-import org.cocos2d.actions.base.CCRepeatForever;
-import org.cocos2d.actions.interval.CCJumpBy;
 import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
 import org.cocos2d.actions.interval.CCScaleTo;
@@ -60,12 +58,8 @@ public class GameLayer extends CCLayer{
 		
 		landMonster.runAction(monsterScale1);
 		
-		CCMoveBy move1 = CCMoveBy.action(2, CGPoint.ccp(-800, 0));
-		CCJumpBy jumpBack = CCJumpBy.action(2, CGPoint.ccp(800, 0), 500	, 4);
-		CCSequence seqMove = CCSequence.actions(move1, jumpBack);
-		CCRepeatForever repeatMove = CCRepeatForever.action(seqMove);
-		
-		landMonster.runAction(repeatMove);
+		CCMoveBy move1 = CCMoveBy.action(2, CGPoint.ccp(800, 500));
+		landMonster.runAction(move1);
 		
 	}
 
