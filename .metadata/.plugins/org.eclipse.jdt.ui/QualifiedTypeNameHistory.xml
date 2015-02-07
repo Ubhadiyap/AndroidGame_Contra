@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.cocos2d.opengl.CCGLSurfaceView"/>
+<fullyQualifiedTypeName name="org.cocos2d.layers.CCScene"/>
+<fullyQualifiedTypeName name="org.cocos2d.layers.CCLayer"/>
+<fullyQualifiedTypeName name="org.cocos2d.nodes.CCSprite"/>
+<fullyQualifiedTypeName name="org.cocos2d.types.CGPoint"/>
+<fullyQualifiedTypeName name="android.view.MotionEvent"/>
+<fullyQualifiedTypeName name="org.cocos2d.nodes.CCDirector"/>
+<fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCMoveBy"/>
+<fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCSequence"/>
+<fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCMoveTo"/>
+</qualifiedTypeNameHistroy>

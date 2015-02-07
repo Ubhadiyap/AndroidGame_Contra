@@ -2,6 +2,7 @@ package com.example.contramini;
 
 import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
+import org.cocos2d.actions.interval.CCScaleTo;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.nodes.CCDirector;
@@ -18,6 +19,7 @@ public class GameLayer extends CCLayer{
 	CCSprite leftButton;
 	CCSprite rightButton;
 	CCSprite jumpButton;
+	CCSprite shootButton;
 	
 	
 	// to receive user touch event , you should set this layer first.
@@ -28,24 +30,33 @@ public class GameLayer extends CCLayer{
 		landMonster = CCSprite.sprite("goomba2.png");
 		leftButton = CCSprite.sprite("leftbutton.png");
 		rightButton = CCSprite.sprite("rightbutton.png");
-		jumpButton = CCSprite.sprite("jumpbutton.jpg");
+		jumpButton = CCSprite.sprite("jumpW.png");
+		shootButton = CCSprite.sprite("shootW.png");
+		
+		
 		CGPoint initPoint = CGPoint.ccp(100, 500);
 		CGPoint landMonsterPosition = CGPoint.ccp(1300, 500);
 		CGPoint LBPosition = CGPoint.ccp(250, 150);
 		CGPoint RBPosition = CGPoint.ccp(750, 150);
 		CGPoint JBPosition = CGPoint.ccp(1500, 150);
+		CGPoint SBPosition = CGPoint.ccp(1500, 600);
 		
 		this.addChild(player);
 		this.addChild(leftButton);
 		this.addChild(rightButton);
 		this.addChild(jumpButton);
 		this.addChild(landMonster);
+		this.addChild(shootButton);
 		
 		player.setPosition(initPoint);
 		landMonster.setPosition(landMonsterPosition);
+		CCScaleTo monsterScale1 = CCScaleTo.action(0.1f, 0.3f);
 		leftButton.setPosition(LBPosition);
 		rightButton.setPosition(RBPosition);
 		jumpButton.setPosition(JBPosition);
+		shootButton.setPosition(SBPosition);
+		
+		landMonster.runAction(monsterScale1);
 		
 		
 		
@@ -72,8 +83,10 @@ public class GameLayer extends CCLayer{
 		CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
 		
 		
-		if(x > 1000){
+		if(x > 1000 && y > 500){
 			player.runAction(jumpSec);
+		}else if(x >1000 && y < 500){
+			this.shoot();
 		}
 		return super.ccTouchesBegan(event);
 	}
@@ -119,6 +132,21 @@ public class GameLayer extends CCLayer{
 
 		
 		return super.ccTouchesMoved(event);
+	}
+	
+	public void shoot(){
+		float x =player.getPosition().x;
+		float y =player.getPosition().y;
+		CCSprite projectile = CCSprite.sprite("Projectile.png");
+		this.addChild(projectile);
+		CGPoint ini = CGPoint.ccp(x, y);
+		projectile.setPosition(ini);
+		
+		CGPoint target = CGPoint.ccp(1800, 500);
+		CCMoveTo moveProjec = CCMoveTo.action(0.5f, target);
+		projectile.runAction(moveProjec);
+		
+		
 	}
 
 }
