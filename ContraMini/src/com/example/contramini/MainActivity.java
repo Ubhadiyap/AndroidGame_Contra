@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         CCScene scene = CCScene.node();
         
         //create layer
-        GameLayer gameLayer = new GameLayer();
+        GameLayer2 gameLayer = new GameLayer2();
         //add game layer to game scene;
         scene.addChild(gameLayer);
         //run game scene

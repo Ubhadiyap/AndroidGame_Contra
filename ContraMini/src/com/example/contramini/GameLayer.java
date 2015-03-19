@@ -8,6 +8,7 @@ import org.cocos2d.actions.interval.CCScaleTo;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.nodes.CCDirector;
+import org.cocos2d.nodes.CCParallaxNode;
 import org.cocos2d.nodes.CCSprite;
 import org.cocos2d.types.CGPoint;
 
@@ -34,6 +35,9 @@ public class GameLayer extends CCLayer{
 		rightButton = CCSprite.sprite("rightbutton.png");
 		jumpButton = CCSprite.sprite("jumpW.png");
 		shootButton = CCSprite.sprite("shootW.png");
+		
+//		CCParallaxNode node = CCParallaxNode.node();
+//		node.addChild(child, z);
 		
 		
 		CGPoint initPoint = CGPoint.ccp(100, 500);
@@ -112,7 +116,7 @@ public class GameLayer extends CCLayer{
 	@Override
 	public boolean ccTouchesMoved(MotionEvent event) {
 		// TODO Auto-generated method stub
-		//System.out.println("move");
+		System.out.println("move");
 		float x = event.getX();
 		float y = event.getY();
 		
