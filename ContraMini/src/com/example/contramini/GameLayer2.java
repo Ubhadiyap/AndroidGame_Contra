@@ -77,6 +77,7 @@ public class GameLayer2 extends CCLayer{
 		// set monster
 		landMonster1 = CCSprite.sprite("goomba2.png");
 		landMonster1.setScale(0.3f);
+		landMonster1.runAction(Actions.getRepeatJump());
 		landMonster2 = CCSprite.sprite("goomba2.png");
 		landMonster2.setScale(0.3f);
 		back = CCSprite.sprite("long.jpg");
@@ -97,7 +98,7 @@ public class GameLayer2 extends CCLayer{
 		
 		backgroundNode.addChild(back, -1, 0.05f, 0.05f, backWidth/2, backHeight/2);
 		backgroundNode.addChild(landMonster1, 0, 0.1f, 0.1f, 600f, landMonsterHeight/2);
-		backgroundNode.addChild(landMonster2, 0, 0.1f, 0.1f, 4000f, landMonsterHeight/2);
+		backgroundNode.addChild(landMonster2, 0, 0.1f, 0.1f, 2200f, landMonsterHeight/2);
 		this.addChild(player, 0);
 		this.addChild(backgroundNode, -1);
 		
@@ -131,6 +132,9 @@ public class GameLayer2 extends CCLayer{
 		
 		if(x > 1000 && y > 500){   //jump
 			player.runAction(jumpSec);
+			CGPoint monster2Position = landMonster2.getPosition();
+			System.out.println("landMonster2   "+landMonster2.convertToWorldSpace(0, 0));
+			System.out.println("player    " + player.getPosition());
 
 		}else if(x >1000 && y < 500){   //shoot
 			this.shoot();
@@ -145,9 +149,9 @@ public class GameLayer2 extends CCLayer{
 		
 		CGPoint p1 = CGPoint.ccp(x, y);
 		CGPoint p2 = CCDirector.sharedDirector().convertToGL(p1);
-		System.out.println("p1.x:"+ x + ".p1.y:" + y);
-		System.out.println("p2.x:"+ p2.x + ".p2.y:" + p2.y);
-		System.out.println("began");
+//		System.out.println("p1.x:"+ x + ".p1.y:" + y);
+//		System.out.println("p2.x:"+ p2.x + ".p2.y:" + p2.y);
+//		System.out.println("began");
 		
 		float realX = p2.x;
 		float realY = p2.y;
@@ -214,8 +218,9 @@ public class GameLayer2 extends CCLayer{
 		Iterator<CCSprite> monIterator = this.monsterArray.iterator();
 		while(monIterator.hasNext()){
 			CCSprite monster = monIterator.next();
-			CGRect monsterRect = CGRect.make(monster.getPosition().x - (monster.getContentSize().width / 2.0f),
-					monster.getPosition().y - (monster.getContentSize().height / 2.0f),
+			CGPoint monsterAbsoPosition = monster.convertToWorldSpace(0, 0);
+			CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (monster.getContentSize().width / 2.0f),
+					monsterAbsoPosition.y - (monster.getContentSize().height / 2.0f),
 					monster.getContentSize().width,
 					monster.getContentSize().height);
 			for(CCSprite projectile:this.projectileArray){

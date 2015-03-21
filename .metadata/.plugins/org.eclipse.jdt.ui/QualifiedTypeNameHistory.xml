@@ -10,4 +10,6 @@
 <fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCMoveBy"/>
 <fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCSequence"/>
 <fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCMoveTo"/>
+<fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCScaleTo"/>
+<fullyQualifiedTypeName name="org.cocos2d.actions.interval.CCJumpBy"/>
 </qualifiedTypeNameHistroy>
