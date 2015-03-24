@@ -77,7 +77,7 @@ public class GameLayer2 extends CCLayer{
 		// set monster
 		landMonster1 = CCSprite.sprite("goomba2.png");
 		landMonster1.setScale(0.3f);
-		landMonster1.runAction(Actions.getRepeatJump());
+		landMonster1.runAction(Actions.getMoveAr());
 		landMonster2 = CCSprite.sprite("goomba2.png");
 		landMonster2.setScale(0.3f);
 		back = CCSprite.sprite("long.jpg");
@@ -97,14 +97,24 @@ public class GameLayer2 extends CCLayer{
 		CGPoint bgSpeed = CGPoint.ccp(0.05f, 0.05f);
 		
 		backgroundNode.addChild(back, -1, 0.05f, 0.05f, backWidth/2, backHeight/2);
-		backgroundNode.addChild(landMonster1, 0, 0.1f, 0.1f, 600f, landMonsterHeight/2);
+		backgroundNode.addChild(landMonster1, 0, 0.1f, 0.1f, 800f, landMonsterHeight/2);
 		backgroundNode.addChild(landMonster2, 0, 0.1f, 0.1f, 2200f, landMonsterHeight/2);
 		this.addChild(player, 0);
 		this.addChild(backgroundNode, -1);
 		
-		//add monsters to monster array
+		//add fly octor
+		CCSprite flyoctor = MonsterFactory.getFlyOctor();
+		backgroundNode.addChild(flyoctor,0,0.1f,0.1f,1500f,flyoctor.getBoundingBox().size.height/2);
+		
+		//add banshou
+		CCSprite banshou = MonsterFactory.getBanshou();
+		backgroundNode.addChild(banshou,0,0.1f,0.1f,4000f,banshou.getBoundingBox().size.height/2);
+		
+		//add monsters to monster array.   
 		monsterArray.add(landMonster1);
 		monsterArray.add(landMonster2);
+		monsterArray.add(flyoctor);
+		monsterArray.add(banshou);
 		
 		this.schedule("update");
 		
@@ -214,7 +224,7 @@ public class GameLayer2 extends CCLayer{
 			}
 		}
 		
-
+		// shoot monster detection
 		Iterator<CCSprite> monIterator = this.monsterArray.iterator();
 		while(monIterator.hasNext()){
 			CCSprite monster = monIterator.next();

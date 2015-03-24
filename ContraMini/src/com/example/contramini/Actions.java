@@ -8,11 +8,18 @@ import org.cocos2d.types.CGPoint;
 
 public class Actions {
 	public static CCRepeatForever getRepeatJump(){
-		CCMoveBy move1 = CCMoveBy.action(2, CGPoint.ccp(-800, 0));
-		CCJumpBy jumpBack = CCJumpBy.action(2, CGPoint.ccp(800, 0), 500	, 4);
+		CCMoveBy move1 = CCMoveBy.action(6, CGPoint.ccp(-800, 0));
+		CCJumpBy jumpBack = CCJumpBy.action(6, CGPoint.ccp(800, 0), 500	, 4);
 		CCSequence seqMove = CCSequence.actions(move1, jumpBack);
 		CCRepeatForever repeatMove = CCRepeatForever.action(seqMove);
 		return repeatMove;
 	}
-
+	
+	public static CCRepeatForever getMoveAr(){
+		CCMoveBy move1 = CCMoveBy.action(2,CGPoint.ccp(-800, 0));
+		CCMoveBy move2 = CCMoveBy.action(2,CGPoint.ccp(800, 0));
+		CCSequence seqMove = CCSequence.actions(move1, move2);
+		CCRepeatForever repeatMove = CCRepeatForever.action(seqMove);
+		return repeatMove;
+	}
 }

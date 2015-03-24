@@ -33,6 +33,7 @@ public class MainActivity extends Activity {
         director.setDisplayFPS(true);
         //set FPS value, time need to per zhen;
         director.setAnimationInterval(1/30.0);
+
         
         //create scene object
         CCScene scene = CCScene.node();
