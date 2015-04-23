@@ -22,4 +22,16 @@ public class Actions {
 		CCRepeatForever repeatMove = CCRepeatForever.action(seqMove);
 		return repeatMove;
 	}
+	
+	public static CCMoveBy playerMoveForward(){
+		CGPoint moveForwardVetor = CGPoint.ccp(200, 0);
+		CCMoveBy forwardMove = CCMoveBy.action(1.0f, moveForwardVetor);
+		return forwardMove;
+	}
+	
+	public static CCMoveBy playerMoveBackward(){
+		CGPoint moveBackwardVector = CGPoint.ccp(-200, 0);
+		CCMoveBy backwardMove = CCMoveBy.action(1.0f, moveBackwardVector);
+		return backwardMove;
+	}
 }
