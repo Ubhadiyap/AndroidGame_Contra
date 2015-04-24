@@ -1,6 +1,7 @@
 package com.example.contramini;
 
 import org.cocos2d.actions.base.CCRepeatForever;
+import org.cocos2d.actions.interval.CCIntervalAction;
 import org.cocos2d.actions.interval.CCJumpBy;
 import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
@@ -10,7 +11,12 @@ import org.cocos2d.layers.CCLayer;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCParallaxNode;
 import org.cocos2d.nodes.CCSprite;
+import org.cocos2d.nodes.CCTextureCache;
+import org.cocos2d.particlesystem.CCParticleExplosion;
+import org.cocos2d.particlesystem.CCParticleFire;
+import org.cocos2d.particlesystem.CCParticleSystem;
 import org.cocos2d.types.CGPoint;
+import org.cocos2d.types.CGSize;
 
 import android.view.MotionEvent;
 
@@ -24,10 +30,62 @@ public class GameLayer3 extends CCLayer{
 	CCSprite jumpButton;
 	CCSprite shootButton;
 	
+	CCSprite background;
+	
+//	CCParticleFire emitter = CCParticleFire.node();
+	
 	
 	// to receive user touch event , you should set this layer first.
 	public GameLayer3(){
+		CGSize s = CCDirector.sharedDirector().winSize();
+        background = CCSprite.sprite("long.jpg");
+        addChild(background, 0);
+        background.setPosition(CGPoint.make(s.width/2, s.height-180));
+
+        CCIntervalAction move = CCMoveBy.action(4, CGPoint.ccp(300, 0));
+        CCIntervalAction move_back = move.reverse();
+        CCIntervalAction seq = CCSequence.actions(move, move_back);
+        background.runAction(CCRepeatForever.action(seq));
+        
+        CCParticleFire emitter = ParticleSystem.getFire(700, 500);
+		addChild(emitter,6);
+		emitter.setTexture(CCTextureCache.sharedTextureCache().addImage("fire.png"));
+		CGPoint p = emitter.getPosition();
+		emitter.setPosition(CGPoint.ccp(500, 500));
 		
+		CCParticleSystem emitter2 = CCParticleExplosion.node();
+		addChild(emitter2,6);
+		
+		emitter2.setScale(3.5f);
+		emitter2.setTexture(CCTextureCache.sharedTextureCache().addImage("stars_grayscale.png"));
+		emitter2.setPosition(CGPoint.ccp(800, 500));
+		
+		CCParticleSystem emitter3 = ParticleSystem.getSnow(1000, 1100);
+		//addChild(emitter3,3);
+		
+		CCParticleSystem emitter4 = ParticleSystem.getFirework(300,100);
+		addChild(emitter4,3);
+		
+		CCParticleSystem emitter5 = ParticleSystem.getFlower(500, 300);
+		addChild(emitter5,3);
+		
+		CCParticleSystem emitter6 = ParticleSystem.getGalaxy(700,300);
+		addChild(emitter6,3);
+		
+		CCParticleSystem emitter7 = ParticleSystem.getRing(1100,300);
+		addChild(emitter7,3);
+		
+		CCParticleSystem emitter8 = ParticleSystem.getRotFlower(1300,300);
+		addChild(emitter8,3);
+		
+		CCParticleSystem emitter9 = ParticleSystem.getSmoke(1500,300);
+		addChild(emitter9,3);
+		
+		CCParticleSystem emitter10 = ParticleSystem.getSun(1700,300);
+		addChild(emitter10,3);
+		
+		CCParticleSystem emitter11 = ParticleSystem.getRain(1100, 1000);
+		addChild(emitter11,9);
 		
 	}
 
@@ -66,8 +124,9 @@ public class GameLayer3 extends CCLayer{
 	public boolean ccTouchesEnded(MotionEvent event) {
 		// TODO Auto-generated method stub
 
-		System.out.println("end");
-		return super.ccTouchesEnded(event);
+		
+    	return true;
+		
 	}
 	
 	//when user finger moved in screen, execute this method.
@@ -102,6 +161,8 @@ public class GameLayer3 extends CCLayer{
 		
 		return super.ccTouchesMoved(event);
 	}
+	
+	
 	
 
 

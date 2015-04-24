@@ -3,7 +3,11 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="libs/cocos2d-android.jar"/>
+	<classpathentry kind="lib" path="libs/cocos2d-android.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/D:/a--google driver/MyProject/cocos2d_android/cocos2d-master/cocos2d-android/libs/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>

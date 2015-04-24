@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
         //set whether display FPS value;
         director.setDisplayFPS(true);
         //set FPS value, time need to per zhen;
-        director.setAnimationInterval(1/30.0);
+        director.setAnimationInterval(1/100.0);
 
         
         //create scene object
