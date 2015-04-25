@@ -3,11 +3,15 @@ package com.example.contramini;
 import org.cocos2d.actions.base.CCAction;
 import org.cocos2d.actions.base.CCRepeatForever;
 import org.cocos2d.actions.interval.CCAnimate;
+import org.cocos2d.actions.interval.CCBlink;
 import org.cocos2d.actions.interval.CCJumpBy;
 import org.cocos2d.actions.interval.CCMoveBy;
+import org.cocos2d.actions.interval.CCMoveTo;
+import org.cocos2d.actions.interval.CCScaleBy;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.actions.interval.CCSpawn;
 import org.cocos2d.nodes.CCAnimation;
+import org.cocos2d.nodes.CCSprite;
 import org.cocos2d.types.CGPoint;
 
 public class Actions {
@@ -19,17 +23,25 @@ public class Actions {
 		return repeatMove;
 	}
 	
-	public static CCRepeatForever getMoveAr(){
-		CCMoveBy move1 = CCMoveBy.action(2,CGPoint.ccp(-800, 0));
-		CCMoveBy move2 = CCMoveBy.action(2,CGPoint.ccp(800, 0));
+	public static CCRepeatForever getMoveAr(float oneRoundTime, float distance){
+		CCMoveBy move1 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(-1*distance, 0));
+		CCMoveBy move2 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(distance, 0));
 		CCSequence seqMove = CCSequence.actions(move1, move2);
 		CCRepeatForever repeatMove = CCRepeatForever.action(seqMove);
 		return repeatMove;
 	}
 	
+	public static CCSequence getOneRoundMove(float oneRoundTime, float distance){
+		CCMoveBy move1 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(-1*distance, 0));
+		CCMoveBy move2 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(distance, 0));
+		CCSequence seqMove = CCSequence.actions(move1, move2);
+		return seqMove;
+	}
+	
 	public static CCMoveBy playerMoveForward(){
 		CGPoint moveForwardVetor = CGPoint.ccp(400, 0);
 		CCMoveBy forwardMove = CCMoveBy.action(2.0f, moveForwardVetor);
+		forwardMove.setTag(1);
 		return forwardMove;
 	}
 	
@@ -42,6 +54,7 @@ public class Actions {
 	public static CCMoveBy playerMoveBackward(){
 		CGPoint moveBackwardVector = CGPoint.ccp(-400, 0);
 		CCMoveBy backwardMove = CCMoveBy.action(2.0f, moveBackwardVector);
+		backwardMove.setTag(1);
 		return backwardMove;
 	}
 	
@@ -58,14 +71,55 @@ public class Actions {
 		return repeatMove;
 	}
 	
-	public static CCSpawn player1Hurt(){
-		
-		CCAnimation animation = CCAnimation.animation("hurt", 0.5f);
-			
+	public static void loseHealth(CCSprite player){
+		//player.stopAllActions();
+		CCAnimation animation = CCAnimation.animation("hurt", 0.1f);
 		animation.addFrame("raw_bluePlayer5.png");
 		animation.addFrame("raw_bluePlayer6.png");
-		CCAnimate scrPprAction = CCAnimate.action(1.0f, animation, false);
-		CCSpawn hurtBack = CCSpawn.actions(Actions.playerHurtBack(),scrPprAction);
-		return hurtBack;
+		CCAnimate scrPprAction = CCAnimate.action(0.8f, animation, false);
+		CCBlink blink = CCBlink.action(0.8f, 5);
+		CCSpawn hurtSpawn = CCSpawn.actions(blink,scrPprAction);
+		CCMoveTo moveToStartPoint = CCMoveTo.action(0.0f, CGPoint.ccp(100, 1100));
+		CCMoveTo mt = CCMoveTo.action(0.5f, CGPoint.ccp(100, 200));
+		CCSequence seq = CCSequence.actions(hurtSpawn, moveToStartPoint,mt);
+		player.runAction(seq);
+		
 	}
+	
+	// heathBar scale
+	public static CCScaleBy adjustHealthBar(int delta,float health){
+		CCScaleBy scale = CCScaleBy.action(0.2f, health/(health+1), 1.0f);
+		return scale;
+	}
+	
+	public static CCRepeatForever GetpirateAction(){
+		CCAnimation animation = CCAnimation.animation("pirate", 0.2f);
+		
+		for(int i =1 ; i<= 8; i++){
+			animation.addFrame("priate"+i+".png");
+		}
+
+
+		CCAnimate scrPprAction = CCAnimate.action(2.0f, animation, false);
+		//CCSequence moveAround = getOneRoundMove(3.0f, 800f);
+		//CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
+		CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
+		return repeatMove;
+	}
+	
+	public static CCRepeatForever GetBlueZambieAction(){
+		CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
+		
+		for(int i =1 ; i<= 17; i++){
+			animation.addFrame("BlueZambie"+i+".png");
+		}
+
+
+		CCAnimate scrPprAction = CCAnimate.action(2.0f, animation, false);
+		//CCSequence moveAround = getOneRoundMove(3.0f, 800f);
+		//CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
+		CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
+		return repeatMove;
+	}
+
 }

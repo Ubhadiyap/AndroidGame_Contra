@@ -2,7 +2,12 @@ package com.example.contramini;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.cocos2d.actions.CCProgressTimer;
 import org.cocos2d.actions.base.CCAction;
 import org.cocos2d.actions.interval.CCAnimate;
 import org.cocos2d.actions.interval.CCMoveBy;
@@ -33,8 +38,7 @@ public class GameLayer2 extends CCLayer{
 	CCSprite landMonster2;
 	CCSprite back;
 	CCParallaxNode backgroundNode;
-	CCSprite healthBar;
-	
+	CCProgressTimer healthBar;	
 	
 	//projectile array
 	ArrayList<CCSprite> projectileArray;
@@ -42,112 +46,40 @@ public class GameLayer2 extends CCLayer{
 	//monster array
 	ArrayList<CCSprite> monsterArray;
 	
-	//control buttons
-	CCSprite leftButton;
-	CCSprite rightButton;
-	CCSprite jumpButton;
-	CCSprite shootButton;
+	boolean invulnerable = false;
 	
 	final int GAME_START_HEIGHT = 300;
-	
-	
+		
 	public GameLayer2(){
 		// enable touch operation
 		this.setIsTouchEnabled(true);
-		//set control buttons
-		leftButton = CCSprite.sprite("leftbutton.png");
-		rightButton = CCSprite.sprite("rightbutton.png");
-		jumpButton = CCSprite.sprite("jumpW.png");
-		shootButton = CCSprite.sprite("shootW.png");
 		
 		projectileArray = new ArrayList<CCSprite>();
 		monsterArray = new ArrayList<CCSprite>();
-		
-		CGPoint LBPosition = CGPoint.ccp(250, 150);
-		CGPoint RBPosition = CGPoint.ccp(750, 150);
-		CGPoint JBPosition = CGPoint.ccp(1500, 150);
-		CGPoint SBPosition = CGPoint.ccp(1500, 600);
-		
-		leftButton.setPosition(LBPosition);
-		rightButton.setPosition(RBPosition);
-		jumpButton.setPosition(JBPosition);
-		shootButton.setPosition(SBPosition);
-		
-		leftButton.setOpacity(100);
-		rightButton.setOpacity(100);
-		jumpButton.setOpacity(100);
-		shootButton.setOpacity(100);
-		
+				
 		//add control buttons
-		
-		this.addChild(leftButton,2);
-		this.addChild(rightButton,2);
-		this.addChild(jumpButton,2);
-		this.addChild(shootButton,2);
-		// set the player
-		player = CCSprite.sprite("contrachar.png");
-		player.setPosition(100, 90+GAME_START_HEIGHT);
-		player.setScale(0.5f);
-		player.runAction(Actions.player1Animation());
+		for(CCSprite button: UILayout.getButtonsList()){
+			this.addChild(button, 20);
+		}
 
 		//weather is rain
 		CCParticleSystem emitter11 = ParticleSystem.getRain(1100, 1000);
 		addChild(emitter11,9);
 		
-		//set health bar
-		healthBar = CCSprite.sprite("HealthBar.png");
-		healthBar.setPosition(200, 1000);
-		
-		// set monster
-		landMonster1 = CCSprite.sprite("goomba2.png");
-		landMonster1.setScale(0.3f);
-		landMonster1.runAction(Actions.getMoveAr());
-		landMonster2 = CCSprite.sprite("goomba2.png");
-		landMonster2.setScale(0.3f);
-		back = CCSprite.sprite("long.jpg");
-		back.setScale(2.3f);
-		backgroundNode = CCParallaxNode.node();
-		CGSize winsize = CCDirector.sharedDirector().winSize();
-		
-		
-		float backHeight = back.getBoundingBox().size.height;
-		float backWidth = back.getBoundingBox().size.width;
-		
-		float landMonsterWidth = landMonster1.getBoundingBox().size.width;
-		float landMonsterHeight =landMonster1.getBoundingBox().size.height;
-		
-		// 3) Determine relative movement speeds for space dust and background
-		CGPoint monsterSpeed = CGPoint.ccp(0.1f, 0.1f);
-		CGPoint bgSpeed = CGPoint.ccp(0.05f, 0.05f);
-		
-		backgroundNode.addChild(back, -1, 0.1f, 0.1f, backWidth/2, backHeight/2+GAME_START_HEIGHT);
-		backgroundNode.addChild(landMonster1, 0, 0.1f, 0.1f, 800f, landMonsterHeight/2+GAME_START_HEIGHT);
-		backgroundNode.addChild(landMonster2, 0, 0.1f, 0.1f, 2200f, landMonsterHeight/2+GAME_START_HEIGHT);
+		player = Heros.getHero(GAME_START_HEIGHT);
 		this.addChild(player, 0);
+		
+
+		healthBar =UILayout.getHealthBar();
+		//add health bar
+		addChild(healthBar,17);
+		
+		BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT);
+		backgroundNode = background.getBackgroundNode();
 		this.addChild(backgroundNode, -1);
 		
-		//add health bar
-		this.addChild(healthBar,0);
-		
-		//add fly octor
-		CCSprite flyoctor = MonsterFactory.getFlyOctor();
-		backgroundNode.addChild(flyoctor,0,0.1f,0.1f,1500f,flyoctor.getBoundingBox().size.height/2+GAME_START_HEIGHT);
-		
-		//add banshou
-		CCSprite banshou = MonsterFactory.getBanshou();
-		backgroundNode.addChild(banshou,0,0.1f,0.1f,4000f,banshou.getBoundingBox().size.height/2+GAME_START_HEIGHT);
-		
-		CCSprite fly2 = MonsterFactory.getFlyOctor();
-		backgroundNode.addChild(fly2,0,0.1f,0.1f,18000f,fly2.getBoundingBox().size.height/2+GAME_START_HEIGHT);
-		monsterArray.add(fly2);
-		//add monsters to monster array.   
-		monsterArray.add(landMonster1);
-		monsterArray.add(landMonster2);
-		monsterArray.add(flyoctor);
-		monsterArray.add(banshou);
-		
-		
-		
+		monsterArray = background.getMonsterArray();
+
 		this.schedule("update");
 		
 		
@@ -172,9 +104,9 @@ public class GameLayer2 extends CCLayer{
 		CCMoveBy moveUp = CCMoveBy.action(0.5f, jumpUpVec);
 		CCMoveTo moveDown = CCMoveTo.action(0.5f, jumpDownDestination);
 		CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
+		jumpSec.setTag(1);
 		
-		
-		CGPoint deltaLeft = CGPoint.ccp(-50, 0);
+		CGPoint deltaLeft = CGPoint.ccp(-5, 0);
 		CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
 
 		if(realX <= 500){   //back move
@@ -182,10 +114,11 @@ public class GameLayer2 extends CCLayer{
 			
 		}else if(realX<= 1000){   //forward move
 			float playerPositionX = player.getPosition().x;
-			if(playerPositionX < 1000){
+			if(playerPositionX < 500){
 				player.runAction(Actions.playerMoveForward());
 			}else{
 				backgroundNode.setPosition(updateLeft);
+				//backgroundNode.runAction(CCMoveBy.action(2.0f, CGPoint.ccp(-400, 0)));
 			}
 		}
 		
@@ -212,7 +145,7 @@ public class GameLayer2 extends CCLayer{
 		float realX = p2.x;
 		float realY = p2.y;
 				
-		CGPoint deltaLeft = CGPoint.ccp(-100, 0);
+		CGPoint deltaLeft = CGPoint.ccp(-10, 0);
 		CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
 
 		if(realX <= 500){   //back move
@@ -220,7 +153,7 @@ public class GameLayer2 extends CCLayer{
 			
 		}else if(realX<= 1000){   //forward move
 			float playerPositionX = player.getPosition().x;
-			if(playerPositionX < 1000){
+			if(playerPositionX < 800){
 				player.runAction(Actions.playerMoveForward());
 			}else{
 				backgroundNode.setPosition(updateLeft);
@@ -266,22 +199,7 @@ public class GameLayer2 extends CCLayer{
 					monsterAbsoPosition.y - (monster.getContentSize().height / 2.0f),
 					monster.getContentSize().width,
 					monster.getContentSize().height);
-//			for(CCSprite projectile:this.projectileArray){
-//				CGRect projectileRect = CGRect.make(projectile.getPosition().x - (projectile.getContentSize().width / 2.0f),
-//	                    projectile.getPosition().y - (projectile.getContentSize().height / 2.0f),
-//	                    projectile.getContentSize().width,
-//	                    projectile.getContentSize().height);
-//			
-//
-//				if(CGRect.intersects(monsterRect, projectileRect)){
-//					System.out.println("SSSSSSSSSSSSSSSS");
-//					CGPoint position = monster.getPosition();
-//					this.addChild(ParticleSystem.getFire(position.x, position.x), 5);
-//					monster.removeSelf();
-//					monIterator.remove();
-//				
-//			}
-//		}
+
 			Iterator<CCSprite> projectIterator = this.projectileArray.iterator();
 			while(projectIterator.hasNext()){
 				CCSprite projectile = projectIterator.next();
@@ -294,7 +212,7 @@ public class GameLayer2 extends CCLayer{
 			if(CGRect.intersects(monsterRect, projectileRect)){
 			
 				CGPoint position = monster.convertToWorldSpace(0, 0);
-				this.addChild(ParticleSystem.getFire(position.x, position.x), 5);
+				this.addChild(ParticleSystem.getFire(position.x, position.y), 5);
 				System.out.println(position.x+"_______"+ position.y);
 				//monster.removeSelf();
 				backgroundNode.removeChild(monster, true);
@@ -308,20 +226,28 @@ public class GameLayer2 extends CCLayer{
 		// player hurt detection
 		CGRect playerRect = CGRect.make(player.getPosition().x - (player.getContentSize().width / 2.0f),
 				player.getPosition().y - (player.getContentSize().height / 2.0f),
-				player.getContentSize().width,
-				player.getContentSize().height);
+				player.getContentSize().width/2,
+				player.getContentSize().height/2);
 		
 		for(CCSprite monster: monsterArray){
 			CGPoint monsterAbsoPosition = monster.convertToWorldSpace(0, 0);
 			CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (monster.getContentSize().width / 2.0f),
 					monsterAbsoPosition.y - (monster.getContentSize().height / 2.0f),
-					monster.getContentSize().width/4,
-					monster.getContentSize().height/4);
-			if(CGRect.intersects(monsterRect, playerRect)){
-				//player.stopAllActions();
-				player.runAction(Actions.playerHurtBack());
-				//player.runAction(Actions.playerHurtBack());
-				//player.runAction(Actions.player1Animation());
+					monster.getContentSize().width/2,
+					monster.getContentSize().height/2);
+			if(CGRect.intersects(monsterRect, playerRect) ){
+				
+				this.invulnerable = true;
+				player.stopAction(1);				
+				Actions.loseHealth(player);
+				healthBar.setPercentage(healthBar.getPercentage()-0.3f);
+				
+				System.out.println(monsterRect.size.height+"||||"+monsterRect.size.width+"  player  "+playerRect.size.height+"||"+playerRect.size.width   );
+				//
+
+				if(healthBar.getPercentage() < 1){
+					
+				}
 				
 			}
 			
