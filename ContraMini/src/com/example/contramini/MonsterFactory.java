@@ -3,18 +3,6 @@ package com.example.contramini;
 import org.cocos2d.nodes.CCSprite;
 
 public class MonsterFactory {
-	public static CCSprite getFlyOctor(){
-		CCSprite landMonster1 = CCSprite.sprite("flyoctor.png");
-		landMonster1.setScale(0.3f);
-		landMonster1.runAction(Actions.getRepeatJump());
-		return landMonster1;
-	}
-	
-//	public static CCSprite getBanshou(){
-//		CCSprite banshou = CCSprite.sprite("banshou.png");
-//		banshou.runAction(Actions.getMoveAr());
-//		return banshou;
-//	}
 	
 	public static CCSprite getPirate(){
 		CCSprite pirate = CCSprite.sprite("priate1.png");		
@@ -28,6 +16,13 @@ public class MonsterFactory {
 		zambie.runAction(Actions.getMoveAr(3.0f, 800));
 		zambie.runAction(Actions.GetBlueZambieAction());
 		return zambie;
+	}
+	
+	public static CCSprite getMS5(){
+		CCSprite ms5 = CCSprite.sprite("MS5_1.png");
+		
+		ms5.runAction(Actions.GetMS5Action());
+		return ms5;
 	}
 
 }

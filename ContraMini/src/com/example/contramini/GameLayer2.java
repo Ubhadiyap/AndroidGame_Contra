@@ -39,12 +39,15 @@ public class GameLayer2 extends CCLayer{
 	CCSprite back;
 	CCParallaxNode backgroundNode;
 	CCProgressTimer healthBar;	
+	CCDirector director;
 	
 	//projectile array
 	ArrayList<CCSprite> projectileArray;
 	
 	//monster array
 	ArrayList<CCSprite> monsterArray;
+	
+	ArrayList<CCSprite> buttons;
 	
 	boolean invulnerable = false;
 	
@@ -57,8 +60,10 @@ public class GameLayer2 extends CCLayer{
 		projectileArray = new ArrayList<CCSprite>();
 		monsterArray = new ArrayList<CCSprite>();
 				
+		
+		buttons = UILayout.getButtonsList();
 		//add control buttons
-		for(CCSprite button: UILayout.getButtonsList()){
+		for(CCSprite button: buttons){
 			this.addChild(button, 20);
 		}
 
@@ -79,56 +84,17 @@ public class GameLayer2 extends CCLayer{
 		this.addChild(backgroundNode, -1);
 		
 		monsterArray = background.getMonsterArray();
+		
+		director = CCDirector.sharedDirector();
 
 		this.schedule("update");
-		
+
 		
 	}
 	
 	@Override
 	public boolean ccTouchesBegan(MotionEvent event) {
-		float x = event.getX();
-		float y = event.getY();
-		
-		CGPoint p1 = CGPoint.ccp(x, y);
-		CGPoint p2 = CCDirector.sharedDirector().convertToGL(p1);
-		float realX = p2.x;
-		System.out.println("p1.x:"+ x + ".p1.y:" + y);
-		System.out.println("p2.x:"+ p2.x + ".p2.y:" + p2.y);
-		System.out.println("began");
-		
-		float playerX =player.getPosition().x;
-		//jump action
-		CGPoint jumpUpVec = CGPoint.ccp(0, 200+GAME_START_HEIGHT);
-		CGPoint jumpDownDestination = CGPoint.ccp(playerX, 70+GAME_START_HEIGHT);
-		CCMoveBy moveUp = CCMoveBy.action(0.5f, jumpUpVec);
-		CCMoveTo moveDown = CCMoveTo.action(0.5f, jumpDownDestination);
-		CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
-		jumpSec.setTag(1);
-		
-		CGPoint deltaLeft = CGPoint.ccp(-5, 0);
-		CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
-
-		if(realX <= 500){   //back move
-			player.runAction(Actions.playerMoveBackward());
-			
-		}else if(realX<= 1000){   //forward move
-			float playerPositionX = player.getPosition().x;
-			if(playerPositionX < 500){
-				player.runAction(Actions.playerMoveForward());
-			}else{
-				backgroundNode.setPosition(updateLeft);
-				//backgroundNode.runAction(CCMoveBy.action(2.0f, CGPoint.ccp(-400, 0)));
-			}
-		}
-		
-		if(x > 1000 && y > 500){   //jump
-			player.runAction(jumpSec);
-			
-
-		}else if(x >1000 && y < 500){   //shoot
-			this.shoot();
-		}
+		PlayerControl.touchBegin(player, backgroundNode, director, event, GAME_START_HEIGHT, this,buttons);
 		return super.ccTouchesBegan(event);
 	}
 	
@@ -149,7 +115,7 @@ public class GameLayer2 extends CCLayer{
 		CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
 
 		if(realX <= 500){   //back move
-			player.runAction(Actions.playerMoveBackward());
+			//player.runAction(Actions.playerMoveBackward());
 			
 		}else if(realX<= 1000){   //forward move
 			float playerPositionX = player.getPosition().x;
@@ -163,22 +129,7 @@ public class GameLayer2 extends CCLayer{
 		return super.ccTouchesMoved(event);
 	}
 	
-	public void shoot(){
-		float x =player.getPosition().x;
-		float y =player.getPosition().y;
-		CCSprite projectile = CCSprite.sprite("bluebullet2.png");
-		this.addChild(projectile);
-		CGPoint ini = CGPoint.ccp(x+30, y+30);
-		projectile.setPosition(ini);
-		this.projectileArray.add(projectile);
-		
-		CGPoint target = CGPoint.ccp(1950, y);
-		CCMoveTo moveProjec = CCMoveTo.action(0.5f, target);
-		projectile.runAction(moveProjec);
 
-		
-		
-	}
 	
 	public void update(float dt){
 		Iterator<CCSprite> proIterator = this.projectileArray.iterator();

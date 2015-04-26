@@ -1,5 +1,7 @@
 package com.example.contramini;
 
+import java.util.Random;
+
 import org.cocos2d.actions.base.CCAction;
 import org.cocos2d.actions.base.CCRepeatForever;
 import org.cocos2d.actions.interval.CCAnimate;
@@ -24,8 +26,10 @@ public class Actions {
 	}
 	
 	public static CCRepeatForever getMoveAr(float oneRoundTime, float distance){
-		CCMoveBy move1 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(-1*distance, 0));
-		CCMoveBy move2 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(distance, 0));
+		Random random = new Random();
+		float delta = random.nextFloat()*800;
+		CCMoveBy move1 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(-1*distance+delta, 0));
+		CCMoveBy move2 = CCMoveBy.action(oneRoundTime,CGPoint.ccp(distance-delta, 0));
 		CCSequence seqMove = CCSequence.actions(move1, move2);
 		CCRepeatForever repeatMove = CCRepeatForever.action(seqMove);
 		return repeatMove;
@@ -55,6 +59,7 @@ public class Actions {
 		CGPoint moveBackwardVector = CGPoint.ccp(-400, 0);
 		CCMoveBy backwardMove = CCMoveBy.action(2.0f, moveBackwardVector);
 		backwardMove.setTag(1);
+		
 		return backwardMove;
 	}
 	
@@ -112,6 +117,21 @@ public class Actions {
 		
 		for(int i =1 ; i<= 17; i++){
 			animation.addFrame("BlueZambie"+i+".png");
+		}
+
+
+		CCAnimate scrPprAction = CCAnimate.action(2.0f, animation, false);
+		//CCSequence moveAround = getOneRoundMove(3.0f, 800f);
+		//CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
+		CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
+		return repeatMove;
+	}
+	
+	public static CCRepeatForever GetMS5Action(){
+		CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
+		
+		for(int i =1 ; i<= 17; i++){
+			animation.addFrame("MS5_"+i+".png");
 		}
 
 

@@ -59,6 +59,19 @@ public class BackGround {
 		monsterArray.add(zambie2);
 		monsterArray.add(zambie1);
 		
+		CCSprite MS5_1 = MonsterFactory.getMS5();
+		CCSprite MS5_2 = MonsterFactory.getMS5();
+		float MS5Width = MS5_1.getBoundingBox().size.width;
+		float MS5Height =MS5_1.getBoundingBox().size.height;
+		
+		backgroundNode.addChild(MS5_1, 0, 1.0f, 1.0f, 4100f, MS5Height/2+GAME_START_HEIGHT);
+		backgroundNode.addChild(MS5_2, 0, 1.0f, 1.0f, 2000f, MS5Height/2+GAME_START_HEIGHT);
+		
+		monsterArray.add(MS5_1);
+		monsterArray.add(MS5_2);
+		
+		
+		
 //		for(CCSprite priate:monsterArray){
 //			priate.runAction(Actions.getMoveAr(3.0f, 800));
 //			priate.runAction(Actions.GetpirateAction());
