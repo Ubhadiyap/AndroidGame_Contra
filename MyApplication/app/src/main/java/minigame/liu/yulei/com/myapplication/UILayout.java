@@ -39,13 +39,13 @@ public class UILayout {
 		return buttons;
 	}
 	
-	public static CCProgressTimer getHealthBar(){
+	public static CCProgressTimer getHealthBar(int x, int y){
 		//set health bar
 		CCProgressTimer healthBar = CCProgressTimer.progress("HealthBar.png");
 		healthBar.setType(CCProgressTimer.kCCProgressTimerTypeHorizontalBarLR);
 		healthBar.setPercentage(100);
-		healthBar.setPosition(CGPoint.ccp(200, 1000));
-		healthBar.setScale(2.0f);
+		healthBar.setPosition(CGPoint.ccp(x, y));
+		//healthBar.setScale(2.0f);
 		return healthBar;
 	}
 }

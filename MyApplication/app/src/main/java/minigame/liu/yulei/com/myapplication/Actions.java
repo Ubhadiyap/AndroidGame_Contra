@@ -42,8 +42,8 @@ public class Actions {
 		return seqMove;
 	}
 	
-	public static CCMoveBy playerMoveForward(){
-		CGPoint moveForwardVetor = CGPoint.ccp(400, 0);
+	public static CCMoveBy playerMoveForward(float speed){
+		CGPoint moveForwardVetor = CGPoint.ccp(400*speed, 0);
 		CCMoveBy forwardMove = CCMoveBy.action(2.0f, moveForwardVetor);
 		forwardMove.setTag(1);
 		return forwardMove;
@@ -62,6 +62,20 @@ public class Actions {
 		
 		return backwardMove;
 	}
+
+    public static CCJumpBy playerJump(int GAME_START_HEIGHT){
+        //jump action
+
+//        float playerX =player.getPosition().x;
+//        CGPoint jumpUpVec = CGPoint.ccp(0, 200+GAME_START_HEIGHT);
+//        CGPoint jumpDownDestination = CGPoint.ccp(playerX, 70+GAME_START_HEIGHT);
+//        CCMoveBy moveUp = CCMoveBy.action(0.5f, jumpUpVec);
+//        CCMoveTo moveDown = CCMoveTo.action(0.5f, jumpDownDestination);
+//        CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
+//        jumpSec.setTag(1);
+        CCJumpBy jump = CCJumpBy.action(1.0f,CGPoint.ccp(0,0),300,1);
+        return jump;
+    }
 	
 	public static CCRepeatForever player1Animation(){
 		CCAnimation animation = CCAnimation.animation("move", 0.2f);
@@ -76,7 +90,7 @@ public class Actions {
 		return repeatMove;
 	}
 	
-	public static void loseHealth(CCSprite player){
+	public static void loseHealth(CCSprite player,int GAME_START_HEIGHT){
 		//player.stopAllActions();
 		CCAnimation animation = CCAnimation.animation("hurt", 0.1f);
 		animation.addFrame("raw_bluePlayer5.png");
@@ -85,7 +99,7 @@ public class Actions {
 		CCBlink blink = CCBlink.action(0.8f, 5);
 		CCSpawn hurtSpawn = CCSpawn.actions(blink,scrPprAction);
 		CCMoveTo moveToStartPoint = CCMoveTo.action(0.0f, CGPoint.ccp(100, 1100));
-		CCMoveTo mt = CCMoveTo.action(0.5f, CGPoint.ccp(100, 200));
+		CCMoveTo mt = CCMoveTo.action(0.5f, CGPoint.ccp(100, 90+GAME_START_HEIGHT));
 		CCSequence seq = CCSequence.actions(hurtSpawn, moveToStartPoint,mt);
 		player.runAction(seq);
 		
@@ -97,7 +111,7 @@ public class Actions {
 		return scale;
 	}
 	
-	public static CCRepeatForever GetpirateAction(){
+	public static CCRepeatForever getpirateAnimation(){
 		CCAnimation animation = CCAnimation.animation("pirate", 0.2f);
 		
 		for(int i =1 ; i<= 8; i++){
@@ -112,7 +126,7 @@ public class Actions {
 		return repeatMove;
 	}
 	
-	public static CCRepeatForever GetBlueZambieAction(){
+	public static CCRepeatForever getBlueZambieAnimation(){
 		CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
 		
 		for(int i =1 ; i<= 17; i++){
@@ -127,7 +141,7 @@ public class Actions {
 		return repeatMove;
 	}
 	
-	public static CCRepeatForever GetMS5Action(){
+	public static CCRepeatForever getMS5Animation(){
 		CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
 		
 		for(int i =1 ; i<= 17; i++){
@@ -142,4 +156,18 @@ public class Actions {
 		return repeatMove;
 	}
 
+    public static CCRepeatForever getBoss1Animation(){
+        CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
+
+        for(int i =1 ; i<= 17; i++){
+            animation.addFrame("level1boss"+i+".png");
+        }
+
+
+        CCAnimate scrPprAction = CCAnimate.action(4.0f, animation, false);
+        //CCSequence moveAround = getOneRoundMove(3.0f, 800f);
+        //CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
+        CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
+        return repeatMove;
+    }
 }

@@ -2,6 +2,7 @@ package minigame.liu.yulei.com.myapplication;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +35,8 @@ import android.view.MotionEvent;
  */
 public class GameLayer2 extends CCLayer{
 	CCSprite player;
+    CCSprite level1Boss;
+    CCProgressTimer bossHealthBar;
 	CCSprite landMonster1;
 	CCSprite landMonster2;
 	CCSprite back;
@@ -43,11 +46,12 @@ public class GameLayer2 extends CCLayer{
 	
 	//projectile array
 	ArrayList<CCSprite> projectileArray;
-	
 	//monster array
 	ArrayList<CCSprite> monsterArray;
-	
+	//buttons Array
 	ArrayList<CCSprite> buttons;
+    //boss projectile
+    ArrayList<CCSprite> bossProjectiles;
 	
 	boolean invulnerable = false;
 	
@@ -59,6 +63,7 @@ public class GameLayer2 extends CCLayer{
 		
 		projectileArray = new ArrayList<CCSprite>();
 		monsterArray = new ArrayList<CCSprite>();
+        bossProjectiles = new ArrayList<>();
 				
 		
 		buttons = UILayout.getButtonsList();
@@ -75,7 +80,7 @@ public class GameLayer2 extends CCLayer{
 		this.addChild(player, 0);
 		
 
-		healthBar =UILayout.getHealthBar();
+		healthBar =UILayout.getHealthBar(200,1000);
 		//add health bar
 		addChild(healthBar,17);
 		
@@ -88,8 +93,11 @@ public class GameLayer2 extends CCLayer{
 		director = CCDirector.sharedDirector();
 
 		this.schedule("update");
+        this.schedule("addDynamicMonster",5);
 
-		
+		this.schedule("addStaticMonster",5);
+        this.schedule("addBoss",3);
+
 	}
 	
 	@Override
@@ -102,30 +110,8 @@ public class GameLayer2 extends CCLayer{
 
 	@Override
 	public boolean ccTouchesMoved(MotionEvent event) {
-		float x = event.getX();
-		float y = event.getY();
-		
-		CGPoint p1 = CGPoint.ccp(x, y);
-		CGPoint p2 = CCDirector.sharedDirector().convertToGL(p1);
 
-		float realX = p2.x;
-		float realY = p2.y;
-				
-		CGPoint deltaLeft = CGPoint.ccp(-10, 0);
-		CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
-
-		if(realX <= 500){   //back move
-			//player.runAction(Actions.playerMoveBackward());
-			
-		}else if(realX<= 1000){   //forward move
-			float playerPositionX = player.getPosition().x;
-			if(playerPositionX < 800){
-				player.runAction(Actions.playerMoveForward());
-			}else{
-				backgroundNode.setPosition(updateLeft);
-			}
-		}
-
+        PlayerControl.touchMoved(player,backgroundNode,event,buttons);
 		return super.ccTouchesMoved(event);
 	}
 	
@@ -166,7 +152,7 @@ public class GameLayer2 extends CCLayer{
 				this.addChild(ParticleSystem.getFire(position.x, position.y), 5);
 				System.out.println(position.x+"_______"+ position.y);
 				//monster.removeSelf();
-				backgroundNode.removeChild(monster, true);
+				monster.removeSelf();
 				monIterator.remove();
 				projectile.removeSelf();
 				projectIterator.remove();
@@ -190,7 +176,7 @@ public class GameLayer2 extends CCLayer{
 				
 				this.invulnerable = true;
 				player.stopAction(1);				
-				Actions.loseHealth(player);
+				Actions.loseHealth(player,GAME_START_HEIGHT);
 				healthBar.setPercentage(healthBar.getPercentage()-0.3f);
 				
 				System.out.println(monsterRect.size.height+"||||"+monsterRect.size.width+"  player  "+playerRect.size.height+"||"+playerRect.size.width   );
@@ -199,12 +185,84 @@ public class GameLayer2 extends CCLayer{
 				if(healthBar.getPercentage() < 1){
 					
 				}
-				
 			}
-			
 		}
-
-	
-
 	}
+
+    public void addDynamicMonster(float dt) {
+        CCSprite prite = MonsterFactory.getPirate(this.GAME_START_HEIGHT);
+        this.addChild(prite);
+        monsterArray.add(prite);
+        CCSprite zambie = MonsterFactory.getBlueZambie(this.GAME_START_HEIGHT);
+        this.addChild(zambie);
+        monsterArray.add(zambie);
+    }
+    public void addBoss(float dt){
+        if(backgroundNode.getPosition().x < -10000){
+            level1Boss = MonsterFactory.getLevel1Boss(this.GAME_START_HEIGHT);
+            this.addChild(level1Boss);
+            this.unschedule("addBoss");
+            this.unschedule("addDynamicMonster");
+            bossHealthBar = UILayout.getHealthBar(1500,1000);
+            this.schedule("bossAttack",3);
+            this.schedule("bossCollisionDetection");
+        }
+    }
+
+    public void bossAttack(float dt){
+        float x =level1Boss.getPosition().x;
+        float y =level1Boss.getPosition().y;
+        CCSprite projectile = CCSprite.sprite("A_missle_1_left.png");
+        this.addChild(projectile);
+        Random random = new Random();
+        float r = random.nextFloat();
+        float randomDeltaY = 2*(r-0.5f)*(level1Boss.getContentSize().height / 2.0f);
+        float iniY = level1Boss.getPosition().y - randomDeltaY;
+        CGPoint ini = CGPoint.ccp(level1Boss.getPosition().x - (level1Boss.getContentSize().width / 2.0f),
+                iniY);
+        projectile.setPosition(ini);
+        this.bossProjectiles.add(projectile);
+        CGPoint target = CGPoint.ccp(0, iniY);
+        CCMoveTo moveProjec = CCMoveTo.action(2.0f, target);
+        projectile.runAction(moveProjec);
+    }
+
+    public void bossCollisionDetection(float dt){
+
+        Iterator<CCSprite> proIterator = this.bossProjectiles.iterator();
+        while(proIterator.hasNext()){
+            CCSprite projectile = proIterator.next();
+            if(projectile.getPosition().x <100){
+                this.removeChild(projectile, true);
+                proIterator.remove();
+            }
+        }
+        // player hurt detection
+        CGRect playerRect = CGRect.make(player.getPosition().x - (player.getContentSize().width / 2.0f),
+                player.getPosition().y - (player.getContentSize().height / 2.0f),
+                player.getContentSize().width/2,
+                player.getContentSize().height/2);
+
+        for(CCSprite monster: bossProjectiles){
+            CGPoint monsterAbsoPosition = monster.convertToWorldSpace(0, 0);
+            CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (monster.getContentSize().width / 2.0f),
+                    monsterAbsoPosition.y - (monster.getContentSize().height / 2.0f),
+                    monster.getContentSize().width/2,
+                    monster.getContentSize().height/2);
+            if(CGRect.intersects(monsterRect, playerRect) ){
+
+                this.invulnerable = true;
+                player.stopAction(1);
+                Actions.loseHealth(player,GAME_START_HEIGHT);
+                healthBar.setPercentage(healthBar.getPercentage()-0.3f);
+
+                System.out.println(monsterRect.size.height+"||||"+monsterRect.size.width+"  player  "+playerRect.size.height+"||"+playerRect.size.width   );
+                //
+
+                if(healthBar.getPercentage() < 1){
+
+                }
+            }
+        }
+    }
 }

@@ -25,67 +25,61 @@ public class PlayerControl {
 		System.out.println("p2.x:"+ p2.x + ".p2.y:" + p2.y);
 		System.out.println("began");
 		
-		float playerX =player.getPosition().x;
-		//jump action
-		CGPoint jumpUpVec = CGPoint.ccp(0, 200+GAME_START_HEIGHT);
-		CGPoint jumpDownDestination = CGPoint.ccp(playerX, 70+GAME_START_HEIGHT);
-		CCMoveBy moveUp = CCMoveBy.action(0.5f, jumpUpVec);
-		CCMoveTo moveDown = CCMoveTo.action(0.5f, jumpDownDestination);
-		CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
-		jumpSec.setTag(1);
+
+
 		
 		CGPoint deltaLeft = CGPoint.ccp(-5, 0);
 		CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
 		
 		float playerPositionX = player.getPosition().x;
+        float playerPositionY = player.getPosition().y;
 		
-		if(buttons.get(0).getBoundingBox().contains(realX, realY)){
+		if(buttons.get(0).getBoundingBox().contains(realX, realY) && playerPositionY == 390.0f){  //press left button
 			if(playerPositionX > 400){
 				System.out.println("player_________Xis"+playerPositionX);
+                System.out.println("player_________Yis"+playerPositionY);
+                System.out.println("backNode__x is " + backgroundNode.getPosition().x);
 				player.runAction(Actions.playerMoveBackward());
 			}
-		}else if(buttons.get(1).getBoundingBox().contains(realX, realY)){	
+		}else if(buttons.get(1).getBoundingBox().contains(realX, realY) && playerPositionY == 390.0f){	 //press right button
 			
 			if(playerPositionX < 500){
-				player.runAction(Actions.playerMoveForward());
+				player.runAction(Actions.playerMoveForward(1.0f));
 			}else{
-				backgroundNode.setPosition(updateLeft);
-				//backgroundNode.runAction(CCMoveBy.action(2.0f, CGPoint.ccp(-400, 0)));
+                if(backgroundNode.getPosition().x > -10500)
+				backgroundNode.runAction(CCMoveBy.action(2.0f, CGPoint.ccp(-2000, 0)));
+                player.runAction(Actions.playerMoveForward(0.5f));
 			}
-		}else if(buttons.get(2).getBoundingBox().contains(realX, realY)){
-			player.runAction(jumpSec);
-		}else if(buttons.get(3).getBoundingBox().contains(realX, realY)){
+		}else if(buttons.get(2).getBoundingBox().contains(realX, realY) && playerPositionY == 390.0f){ // press jump button
+
+            player.runAction(Actions.playerJump(GAME_START_HEIGHT));
+
+		}else if(buttons.get(3).getBoundingBox().contains(realX, realY)){  // press shoot button
 			shoot(player,gameLayer);
-		}else if(buttons.get(4).getBoundingBox().contains(realX, realY)){
+		}else if(buttons.get(4).getBoundingBox().contains(realX, realY)){  // press pause
 			if(director.getIsPaused() == false) director.pause();
 			else director.resume();
 		}
-		
-
-//		if(realX <= 500){   //back move
-//			player.runAction(Actions.playerMoveBackward());
-//			
-//		}else if(realX<= 1000){   //forward move
-//			float playerPositionX = player.getPosition().x;
-//			if(playerPositionX < 500){
-//				player.runAction(Actions.playerMoveForward());
-//			}else{
-//				backgroundNode.setPosition(updateLeft);
-//				//backgroundNode.runAction(CCMoveBy.action(2.0f, CGPoint.ccp(-400, 0)));
-//			}
-//		}
-//		
-//		if(x > 1000 && y > 500){   //jump
-//			player.runAction(jumpSec);
-//			
-//
-//		}else if(x >1000 && y < 500){   //shoot
-//			shoot(player,gameLayer);
-//			if(director.getIsPaused() == false) director.pause();
-//			else director.resume();
-			
-//		}
 	}
+
+    public static void touchMoved(CCSprite player, CCParallaxNode backgroundNode, MotionEvent event,ArrayList<CCSprite> buttons) {
+        float x = event.getX();
+        float y = event.getY();
+
+        CGPoint p1 = CGPoint.ccp(x, y);
+        CGPoint p2 = CCDirector.sharedDirector().convertToGL(p1);
+
+        float realX = p2.x;
+        float realY = p2.y;
+
+        CGPoint deltaLeft = CGPoint.ccp(-10, 0);
+        CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
+
+       if(buttons.get(1).getBoundingBox().contains(realX, realY)){   //forward move
+            float playerPositionX = player.getPosition().x;
+                player.runAction(Actions.playerMoveForward(0.5f));
+        }
+    }
 	
 	public static void shoot(CCSprite player, GameLayer2 gameLayer){
 		float x =player.getPosition().x;

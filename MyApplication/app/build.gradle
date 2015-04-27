@@ -23,4 +23,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile files('src/main/java/minigame/liu/yulei/com/myapplication/cocos2d-android.jar')
+    compile files('libs/cocos2d-android.jar')
 }
