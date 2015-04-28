@@ -80,10 +80,10 @@ public class GameLayer2 extends GameLayer{
 		//weather is rain
 		CCParticleSystem emitter11 = ParticleSystem.getSnow(1100, 1400);
 		addChild(emitter11,9);
-		
+
 		player = Heros.getHero(GAME_START_HEIGHT);
 		this.addChild(player, 0);
-		
+
 
 		healthBar =UILayout.getHealthBar(200,1000);
 		//add health bar

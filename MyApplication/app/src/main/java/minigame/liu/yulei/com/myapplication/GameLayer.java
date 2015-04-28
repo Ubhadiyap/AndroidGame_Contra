@@ -28,6 +28,7 @@ public class GameLayer extends CCLayer{
 
     //projectile array
     ArrayList<CCSprite> projectileArray;
+
     CCLabel scoreLabel;
     CCLabel levelLabel;
     int score = 0;

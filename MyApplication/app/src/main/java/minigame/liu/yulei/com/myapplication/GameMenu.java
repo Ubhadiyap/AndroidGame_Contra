@@ -1,5 +1,8 @@
 package minigame.liu.yulei.com.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.MotionEvent;
 
 import org.cocos2d.layers.CCLayer;
@@ -35,11 +38,41 @@ public class GameMenu extends CCLayer{
         itemLabel.setScale(6.0f);
         itemLabel.setColor(ccColor3B.ccORANGE);
 
-        CCMenuItem item1 = CCMenuItemFont.item("New Game", gameMenu, "enterGame1");
+        CCMenuItem item1 = CCMenuItemFont.item("New Game", gameMenu, "newGame");
         item1.setScale(4.0f);
-        CCMenuItem item2 = CCMenuItemFont.item("Load Game", gameMenu, "menuCallbackEnable");
+        CCMenuItem item2 = CCMenuItemFont.item("Load Game", gameMenu, "loadGame");
         item2.setScale(4.0f);
         CCMenu menu = CCMenu.menu(itemLabel,item1, item2);
+        menu.alignItemsVertically();
+        gameMenu.addChild(menu);
+        return gameMenu;
+    }
+
+    public static GameMenu getLoadGameMenu(){
+        Activity context = CCDirector.sharedDirector().getActivity();
+        SharedPreferences sharedPref = context.getPreferences(Context.MODE_PRIVATE);
+        int level = sharedPref.getInt("Level", 1);
+
+        GameMenu gameMenu = new GameMenu();
+        CCMenuItemFont itemLabel = CCMenuItemFont.item("Load Game", gameMenu,"menuCallbackEnable");
+        itemLabel.setScale(4.0f);
+        itemLabel.setColor(ccColor3B.ccBLUE);
+        itemLabel.setIsEnabled(false);
+        CCMenuItem item1 = CCMenuItemFont.item("Level1", gameMenu, "enterGame1");
+        item1.setScale(4.0f);
+        CCMenuItem item2 = CCMenuItemFont.item("Level2", gameMenu, "enterGame2");
+        item2.setScale(4.0f);
+        CCMenuItem item3 = CCMenuItemFont.item("Level3", gameMenu, "enterGame3");
+        item3.setScale(4.0f);
+        CCMenuItem item4 =  CCMenuItemFont.item("Level4", gameMenu, "enterGame4");
+        item4.setScale(4.0f);
+        CCMenuItem item5 = CCMenuItemFont.item("Back To Main Menu", gameMenu, "backToMainMenu");
+        item5.setScale(4.0f);
+
+        if(level < 4) item4.setIsEnabled(false);
+        if(level < 3) item3.setIsEnabled(false);
+        if(level < 2) item2.setIsEnabled(false);
+        CCMenu menu = CCMenu.menu(itemLabel,item1, item2,item3,item4,item5);
         menu.alignItemsVertically();
         gameMenu.addChild(menu);
         return gameMenu;
@@ -63,6 +96,7 @@ public class GameMenu extends CCLayer{
         return gameMenu;
     }
 
+
     public static GameMenu getWinGameMenu(int level){
         GameMenu gameMenu = new GameMenu();
         CCMenuItemFont itemLabel = CCMenuItemFont.item("Victory", gameMenu,"menuCallbackEnable");
@@ -70,6 +104,13 @@ public class GameMenu extends CCLayer{
         itemLabel.setColor(ccColor3B.ccGREEN);
         itemLabel.setIsEnabled(false);
         CCMenuItem item1;
+
+        Activity activity = CCDirector.sharedDirector().getActivity();
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("Level", level+1);
+        editor.commit();
+
         if(level == 1) item1 = CCMenuItemFont.item("Next Level", gameMenu, "enterGame2");
         else if(level == 2) item1 = CCMenuItemFont.item("Next Level", gameMenu, "enterGame3");
         else if(level == 3) item1 = CCMenuItemFont.item("Next Level", gameMenu, "enterGame4");
@@ -89,6 +130,21 @@ public class GameMenu extends CCLayer{
     public boolean ccTouchesEnded(MotionEvent event) {
         this.setIsTouchEnabled(true);
         return super.ccTouchesEnded(event);
+    }
+
+    public static void newGame(Object sender){
+        CCDirector director =CCDirector.sharedDirector();
+        Activity activity = director.getActivity();
+        SharedPreferences sharedPref = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("Level", 1);
+        editor.commit();
+        CCScene scene = CCScene.node();
+        //create layer
+        GameLayer1 gameLayer = new GameLayer1();
+        //add game layer to game scene;
+        scene.addChild(gameLayer);
+        director.replaceScene(scene);
     }
 
     public static void enterGame1(Object sender){
@@ -137,6 +193,14 @@ public class GameMenu extends CCLayer{
         //create layer
         GameMenu gameLayer = GameMenu.getEntryMenu();
         //add game layer to game scene;
+        scene.addChild(gameLayer);
+        director.replaceScene(scene);
+    }
+
+    public static void loadGame(Object sender){
+        CCDirector director =CCDirector.sharedDirector();
+        CCScene scene = CCScene.node();
+        GameMenu gameLayer = GameMenu.getLoadGameMenu();
         scene.addChild(gameLayer);
         director.replaceScene(scene);
     }
