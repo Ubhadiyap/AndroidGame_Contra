@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
 import org.cocos2d.actions.interval.CCSequence;
+import org.cocos2d.layers.CCLayer;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCParallaxNode;
 import org.cocos2d.nodes.CCSprite;
@@ -13,7 +14,7 @@ import org.cocos2d.types.CGPoint;
 import android.view.MotionEvent;
 
 public class PlayerControl {
-	public static void touchBegin(CCSprite player, CCParallaxNode backgroundNode, CCDirector director, MotionEvent event, int GAME_START_HEIGHT, GameLayer2 gameLayer,ArrayList<CCSprite> buttons){
+	public static void touchBegin(CCSprite player, CCParallaxNode backgroundNode, CCDirector director, MotionEvent event, int GAME_START_HEIGHT, GameLayer gameLayer,ArrayList<CCSprite> buttons){
 		float x = event.getX();
 		float y = event.getY();
 		
@@ -74,14 +75,14 @@ public class PlayerControl {
 
         CGPoint deltaLeft = CGPoint.ccp(-10, 0);
         CGPoint updateLeft = CGPoint.ccpAdd(backgroundNode.getPosition(), deltaLeft);
-
-       if(buttons.get(1).getBoundingBox().contains(realX, realY)){   //forward move
+        float playerPositionY = player.getPosition().y;
+       if(buttons.get(1).getBoundingBox().contains(realX, realY)&& playerPositionY == 390.0f){   //forward move
             float playerPositionX = player.getPosition().x;
                 player.runAction(Actions.playerMoveForward(0.5f));
         }
     }
 	
-	public static void shoot(CCSprite player, GameLayer2 gameLayer){
+	public static void shoot(CCSprite player, GameLayer gameLayer){
 		float x =player.getPosition().x;
 		float y =player.getPosition().y;
 		CCSprite projectile = CCSprite.sprite("bluebullet2.png");

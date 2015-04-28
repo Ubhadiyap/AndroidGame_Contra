@@ -1,46 +1,38 @@
 package minigame.liu.yulei.com.myapplication;
 
+import android.view.MotionEvent;
+
 import org.cocos2d.actions.CCProgressTimer;
-import org.cocos2d.actions.base.CCRepeatForever;
-import org.cocos2d.actions.interval.CCIntervalAction;
-import org.cocos2d.actions.interval.CCJumpBy;
-import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
-import org.cocos2d.actions.interval.CCScaleTo;
-import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCParallaxNode;
 import org.cocos2d.nodes.CCSprite;
-import org.cocos2d.nodes.CCTextureCache;
-import org.cocos2d.particlesystem.CCParticleExplosion;
-import org.cocos2d.particlesystem.CCParticleFire;
 import org.cocos2d.particlesystem.CCParticleSystem;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGRect;
-import org.cocos2d.types.CGSize;
-
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-public class GameLayer3 extends GameLayer{
+/**
+ * Created by alex on 2015/4/27.
+ */
+public class GameLayer1 extends GameLayer{
     CCSprite player;
     CCSprite level1Boss;
     CCProgressTimer bossHealthBar;
-    CCSprite landMonster1;
-    CCSprite landMonster2;
-    CCSprite back;
+
     CCParallaxNode backgroundNode;
     CCProgressTimer healthBar;
     CCDirector director;
-    final int GAME_LEVEL = 3;
+    final int GAME_LEVEL = 1;
+
 
     //projectile array
-    //ArrayList<CCSprite> projectileArray;
+   // ArrayList<CCSprite> projectileArray;
     //monster array
     ArrayList<CCSprite> monsterArray;
     //buttons Array
@@ -52,13 +44,12 @@ public class GameLayer3 extends GameLayer{
 
     final int GAME_START_HEIGHT = 300;
 
-    public GameLayer3(){
+    public GameLayer1(){
         super();
         // enable touch operation
         this.setIsTouchEnabled(true);
         this.levelLabel.setString("Current Level: " + GAME_LEVEL);
         this.scoreLabel.setString("Score: 0");
-
 
         projectileArray = new ArrayList<CCSprite>();
         monsterArray = new ArrayList<CCSprite>();
@@ -83,7 +74,7 @@ public class GameLayer3 extends GameLayer{
         //add health bar
         addChild(healthBar,17);
 
-        BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT,"long3.jpg");
+        BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT,"long.jpg");
         backgroundNode = background.getBackgroundNode();
         this.addChild(backgroundNode, -1);
 
@@ -101,7 +92,7 @@ public class GameLayer3 extends GameLayer{
 
     @Override
     public boolean ccTouchesBegan(MotionEvent event) {
-        PlayerControl.touchBegin(player, backgroundNode, director, event, GAME_START_HEIGHT, this,buttons);
+        PlayerControl.touchBegin(player, backgroundNode, director, event, GAME_START_HEIGHT,this,buttons);
         return super.ccTouchesBegan(event);
     }
 
@@ -275,9 +266,9 @@ public class GameLayer3 extends GameLayer{
 
         //boss hurt dectection
         CGPoint monsterAbsoPosition = level1Boss.convertToWorldSpace(0, 0);
-        CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (level1Boss.getContentSize().width / 2.0f),
+        CGRect monsterRect = CGRect.make(monsterAbsoPosition.x , //monsterAbsoPosition.x - (level1Boss.getContentSize().width / 2.0f
                 monsterAbsoPosition.y - (level1Boss.getContentSize().height / 2.0f),
-                level1Boss.getContentSize().width/4,
+                level1Boss.getContentSize().width,
                 level1Boss.getContentSize().height);
 
         Iterator<CCSprite> projectIterator = this.projectileArray.iterator();
@@ -297,7 +288,7 @@ public class GameLayer3 extends GameLayer{
                     director.replaceScene(scene);
                 }
                 CGPoint position = level1Boss.convertToWorldSpace(0, 0);
-                this.addChild(ParticleSystem.getFire(position.x, position.y), 5);
+                this.addChild(ParticleSystem.getFire(position.x+100, position.y), 5);
                 bossHealthBar.setPercentage(bossHealthBar.getPercentage()-3f);
                 System.out.println(position.x+"_______"+ position.y);
                 projectile.removeSelf();

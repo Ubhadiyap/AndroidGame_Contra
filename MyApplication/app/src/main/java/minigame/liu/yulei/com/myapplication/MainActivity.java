@@ -1,5 +1,8 @@
 package minigame.liu.yulei.com.myapplication;
 import org.cocos2d.layers.CCScene;
+import org.cocos2d.menus.CCMenu;
+import org.cocos2d.menus.CCMenuItem;
+import org.cocos2d.menus.CCMenuItemFont;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.opengl.CCGLSurfaceView;
 
@@ -37,8 +40,11 @@ public class MainActivity extends Activity {
         //create scene object
         CCScene scene = CCScene.node();
 
+
+
+
         //create layer
-        GameLayer2 gameLayer = new GameLayer2();
+        GameMenu gameLayer = GameMenu.getEntryMenu();
         //add game layer to game scene;
         scene.addChild(gameLayer);
         //run game scene

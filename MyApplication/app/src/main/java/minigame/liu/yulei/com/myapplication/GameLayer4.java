@@ -1,33 +1,26 @@
 package minigame.liu.yulei.com.myapplication;
 
+import android.view.MotionEvent;
+
 import org.cocos2d.actions.CCProgressTimer;
-import org.cocos2d.actions.base.CCRepeatForever;
-import org.cocos2d.actions.interval.CCIntervalAction;
-import org.cocos2d.actions.interval.CCJumpBy;
-import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
-import org.cocos2d.actions.interval.CCScaleTo;
-import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCLayer;
 import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCParallaxNode;
 import org.cocos2d.nodes.CCSprite;
-import org.cocos2d.nodes.CCTextureCache;
-import org.cocos2d.particlesystem.CCParticleExplosion;
-import org.cocos2d.particlesystem.CCParticleFire;
 import org.cocos2d.particlesystem.CCParticleSystem;
 import org.cocos2d.types.CGPoint;
 import org.cocos2d.types.CGRect;
-import org.cocos2d.types.CGSize;
-
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-public class GameLayer3 extends GameLayer{
+/**
+ * Created by alex on 2015/4/27.
+ */
+public class GameLayer4 extends GameLayer{
     CCSprite player;
     CCSprite level1Boss;
     CCProgressTimer bossHealthBar;
@@ -37,7 +30,7 @@ public class GameLayer3 extends GameLayer{
     CCParallaxNode backgroundNode;
     CCProgressTimer healthBar;
     CCDirector director;
-    final int GAME_LEVEL = 3;
+    final int GAME_LEVEL = 4;
 
     //projectile array
     //ArrayList<CCSprite> projectileArray;
@@ -52,7 +45,7 @@ public class GameLayer3 extends GameLayer{
 
     final int GAME_START_HEIGHT = 300;
 
-    public GameLayer3(){
+    public GameLayer4(){
         super();
         // enable touch operation
         this.setIsTouchEnabled(true);
@@ -83,7 +76,7 @@ public class GameLayer3 extends GameLayer{
         //add health bar
         addChild(healthBar,17);
 
-        BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT,"long3.jpg");
+        BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT,"long4.jpg");
         backgroundNode = background.getBackgroundNode();
         this.addChild(backgroundNode, -1);
 
@@ -277,7 +270,7 @@ public class GameLayer3 extends GameLayer{
         CGPoint monsterAbsoPosition = level1Boss.convertToWorldSpace(0, 0);
         CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (level1Boss.getContentSize().width / 2.0f),
                 monsterAbsoPosition.y - (level1Boss.getContentSize().height / 2.0f),
-                level1Boss.getContentSize().width/4,
+                level1Boss.getContentSize().width,
                 level1Boss.getContentSize().height);
 
         Iterator<CCSprite> projectIterator = this.projectileArray.iterator();
@@ -285,7 +278,7 @@ public class GameLayer3 extends GameLayer{
             CCSprite projectile = projectIterator.next();
             CGRect projectileRect = CGRect.make(projectile.getPosition().x - (projectile.getContentSize().width / 2.0f),
                     projectile.getPosition().y - (projectile.getContentSize().height / 2.0f),
-                    projectile.getContentSize().width,
+                    projectile.getContentSize().width/4,
                     projectile.getContentSize().height);
 
 

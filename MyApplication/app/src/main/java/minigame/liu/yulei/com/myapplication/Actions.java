@@ -170,4 +170,19 @@ public class Actions {
         CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
         return repeatMove;
     }
+
+    public static CCRepeatForever getBoss2Animation(){
+        CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
+
+        for(int i =1 ; i<= 7; i++){
+            animation.addFrame("level2boss_00"+i+".png");
+        }
+
+
+        CCAnimate scrPprAction = CCAnimate.action(1.0f, animation, false);
+        //CCSequence moveAround = getOneRoundMove(3.0f, 800f);
+        //CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
+        CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
+        return repeatMove;
+    }
 }

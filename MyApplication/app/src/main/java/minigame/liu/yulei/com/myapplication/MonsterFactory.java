@@ -38,4 +38,13 @@ public class MonsterFactory {
         return boss;
     }
 
+    public static CCSprite getLevel2Boss(int GAME_START_HEIGHT){
+        CCSprite boss = CCSprite.sprite("level2boss_001.png");
+        //boss.runAction(Actions.getMoveAr(3.0f, 800));
+        float bossHeight =boss.getBoundingBox().size.height;
+        boss.setPosition( 1500f, bossHeight/2+GAME_START_HEIGHT);
+        boss.runAction(Actions.getBoss2Animation());
+        return boss;
+    }
+
 }

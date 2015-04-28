@@ -15,6 +15,7 @@ import org.cocos2d.actions.interval.CCMoveBy;
 import org.cocos2d.actions.interval.CCMoveTo;
 import org.cocos2d.actions.interval.CCSequence;
 import org.cocos2d.layers.CCLayer;
+import org.cocos2d.layers.CCScene;
 import org.cocos2d.nodes.CCAnimation;
 import org.cocos2d.nodes.CCDirector;
 import org.cocos2d.nodes.CCParallaxNode;
@@ -33,7 +34,7 @@ import android.view.MotionEvent;
  * @author alex
  *
  */
-public class GameLayer2 extends CCLayer{
+public class GameLayer2 extends GameLayer{
 	CCSprite player;
     CCSprite level1Boss;
     CCProgressTimer bossHealthBar;
@@ -43,9 +44,10 @@ public class GameLayer2 extends CCLayer{
 	CCParallaxNode backgroundNode;
 	CCProgressTimer healthBar;	
 	CCDirector director;
+    final int GAME_LEVEL = 2;
 	
 	//projectile array
-	ArrayList<CCSprite> projectileArray;
+	//ArrayList<CCSprite> projectileArray;
 	//monster array
 	ArrayList<CCSprite> monsterArray;
 	//buttons Array
@@ -58,10 +60,13 @@ public class GameLayer2 extends CCLayer{
 	final int GAME_START_HEIGHT = 300;
 		
 	public GameLayer2(){
+        super();
 		// enable touch operation
 		this.setIsTouchEnabled(true);
-		
-		projectileArray = new ArrayList<CCSprite>();
+        this.levelLabel.setString("Current Level: " + GAME_LEVEL);
+        this.scoreLabel.setString("Score: 0");
+
+        projectileArray = new ArrayList<CCSprite>();
 		monsterArray = new ArrayList<CCSprite>();
         bossProjectiles = new ArrayList<>();
 				
@@ -73,7 +78,7 @@ public class GameLayer2 extends CCLayer{
 		}
 
 		//weather is rain
-		CCParticleSystem emitter11 = ParticleSystem.getRain(1100, 1000);
+		CCParticleSystem emitter11 = ParticleSystem.getSnow(1100, 1400);
 		addChild(emitter11,9);
 		
 		player = Heros.getHero(GAME_START_HEIGHT);
@@ -84,7 +89,7 @@ public class GameLayer2 extends CCLayer{
 		//add health bar
 		addChild(healthBar,17);
 		
-		BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT);
+		BackGround background = BackGround.getLevel1Background(GAME_START_HEIGHT,"long2.jpg");
 		backgroundNode = background.getBackgroundNode();
 		this.addChild(backgroundNode, -1);
 		
@@ -156,6 +161,8 @@ public class GameLayer2 extends CCLayer{
 				monIterator.remove();
 				projectile.removeSelf();
 				projectIterator.remove();
+                score += 10;
+                scoreLabel.setString("Score: " + score);
 			}
 		  }			
 		}
@@ -183,7 +190,10 @@ public class GameLayer2 extends CCLayer{
 				//
 
 				if(healthBar.getPercentage() < 1){
-					
+                    GameMenu menu =GameMenu.getLoseGameMenu(GAME_LEVEL);
+                    CCScene scene = CCScene.node();
+                    scene.addChild(menu);
+                    director.replaceScene(scene);
 				}
 			}
 		}
@@ -199,11 +209,12 @@ public class GameLayer2 extends CCLayer{
     }
     public void addBoss(float dt){
         if(backgroundNode.getPosition().x < -10000){
-            level1Boss = MonsterFactory.getLevel1Boss(this.GAME_START_HEIGHT);
+            level1Boss = MonsterFactory.getLevel2Boss(this.GAME_START_HEIGHT);
             this.addChild(level1Boss);
             this.unschedule("addBoss");
             this.unschedule("addDynamicMonster");
             bossHealthBar = UILayout.getHealthBar(1500,1000);
+            this.addChild(bossHealthBar,10);
             this.schedule("bossAttack",3);
             this.schedule("bossCollisionDetection");
         }
@@ -260,8 +271,43 @@ public class GameLayer2 extends CCLayer{
                 //
 
                 if(healthBar.getPercentage() < 1){
-
+                    GameMenu menu =GameMenu.getLoseGameMenu(GAME_LEVEL);
+                    CCScene scene = CCScene.node();
+                    scene.addChild(menu);
+                    director.replaceScene(scene);
                 }
+            }
+        }
+
+        //boss hurt dectection
+        CGPoint monsterAbsoPosition = level1Boss.convertToWorldSpace(0, 0);
+        CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (level1Boss.getContentSize().width / 2.0f),
+                monsterAbsoPosition.y - (level1Boss.getContentSize().height / 2.0f),
+                level1Boss.getContentSize().width/4,
+                level1Boss.getContentSize().height);
+
+        Iterator<CCSprite> projectIterator = this.projectileArray.iterator();
+        while(projectIterator.hasNext()){
+            CCSprite projectile = projectIterator.next();
+            CGRect projectileRect = CGRect.make(projectile.getPosition().x - (projectile.getContentSize().width / 2.0f),
+                    projectile.getPosition().y - (projectile.getContentSize().height / 2.0f),
+                    projectile.getContentSize().width,
+                    projectile.getContentSize().height);
+
+
+            if(CGRect.intersects(monsterRect, projectileRect)){
+                if(bossHealthBar.getPercentage() < 1.0f){
+                    GameMenu menu =GameMenu.getWinGameMenu(GAME_LEVEL);
+                    CCScene scene = CCScene.node();
+                    scene.addChild(menu);
+                    director.replaceScene(scene);
+                }
+                CGPoint position = level1Boss.convertToWorldSpace(0, 0);
+                this.addChild(ParticleSystem.getFire(position.x, position.y), 5);
+                bossHealthBar.setPercentage(bossHealthBar.getPercentage()-3f);
+                System.out.println(position.x+"_______"+ position.y);
+                projectile.removeSelf();
+                projectIterator.remove();
             }
         }
     }

@@ -17,19 +17,19 @@ public class BackGround {
 		this.backgroundNode = backgroundNode;
 	}
 	
-	public static BackGround getLevel1Background(int GAME_START_HEIGHT){
+	public static BackGround getLevel1Background(int GAME_START_HEIGHT,String backGroundFileName){
 		ArrayList<CCSprite> monsterArray = new ArrayList<CCSprite>();
-        CCParallaxNode backgroundNode = getSingleBackNode(GAME_START_HEIGHT,monsterArray);
-        backgroundNode.addChild(getSingleBackNode(GAME_START_HEIGHT,monsterArray),-1,1.0f,1.0f,3072*2.3f-30,0);
+        CCParallaxNode backgroundNode = getSingleBackNode(GAME_START_HEIGHT,monsterArray,backGroundFileName);
+        backgroundNode.addChild(getSingleBackNode(GAME_START_HEIGHT,monsterArray,backGroundFileName),-1,1.0f,1.0f,3072*2.3f-30,0);
 
 		
 
 		return new BackGround(monsterArray,backgroundNode);
 	}
 
-    public static CCParallaxNode getSingleBackNode(int GAME_START_HEIGHT,ArrayList<CCSprite> monsterArray){
+    public static CCParallaxNode getSingleBackNode(int GAME_START_HEIGHT,ArrayList<CCSprite> monsterArray,String backGroundFileName){
         CCParallaxNode backgroundNode = CCParallaxNode.node();
-        CCSprite back = CCSprite.sprite("long.jpg");
+        CCSprite back = CCSprite.sprite(backGroundFileName);
         back.setScale(2.3f);
         float backHeight = back.getBoundingBox().size.height;
         float backWidth = back.getBoundingBox().size.width;
