@@ -13,4 +13,13 @@ public class Heros {
 		return player;
 	}
 
+    public static CCSprite getTankHero(int GAME_START_HEIGHT){
+        // set the player
+        CCSprite player = CCSprite.sprite("player_tank12.png");
+        player.setPosition(100, 90+GAME_START_HEIGHT);
+        player.setScale(0.5f);
+        player.runAction(Actions.playerTankAnimation());
+        return player;
+    }
+
 }

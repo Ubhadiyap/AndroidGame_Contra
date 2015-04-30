@@ -64,15 +64,6 @@ public class Actions {
 	}
 
     public static CCJumpBy playerJump(int GAME_START_HEIGHT){
-        //jump action
-
-//        float playerX =player.getPosition().x;
-//        CGPoint jumpUpVec = CGPoint.ccp(0, 200+GAME_START_HEIGHT);
-//        CGPoint jumpDownDestination = CGPoint.ccp(playerX, 70+GAME_START_HEIGHT);
-//        CCMoveBy moveUp = CCMoveBy.action(0.5f, jumpUpVec);
-//        CCMoveTo moveDown = CCMoveTo.action(0.5f, jumpDownDestination);
-//        CCSequence jumpSec = CCSequence.actions(moveUp, moveDown);
-//        jumpSec.setTag(1);
         CCJumpBy jump = CCJumpBy.action(1.0f,CGPoint.ccp(0,0),300,1);
         return jump;
     }
@@ -89,6 +80,18 @@ public class Actions {
 		CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
 		return repeatMove;
 	}
+
+    public static CCRepeatForever playerTankAnimation(){
+        CCAnimation animation = CCAnimation.animation("player_tank", 0.2f);
+
+        for(int i =1 ; i<= 12; i++){
+            animation.addFrame("player_tank"+i+".png");
+        }
+
+        CCAnimate scrPprAction = CCAnimate.action(1.2f, animation, false);
+        CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
+        return repeatMove;
+    }
 	
 	public static void loseHealth(CCSprite player,int GAME_START_HEIGHT){
 		//player.stopAllActions();
@@ -158,12 +161,9 @@ public class Actions {
 
     public static CCRepeatForever getBoss1Animation(){
         CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
-
         for(int i =1 ; i<= 17; i++){
             animation.addFrame("level1boss"+i+".png");
         }
-
-
         CCAnimate scrPprAction = CCAnimate.action(4.0f, animation, false);
         //CCSequence moveAround = getOneRoundMove(3.0f, 800f);
         //CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
@@ -173,15 +173,10 @@ public class Actions {
 
     public static CCRepeatForever getBoss2Animation(){
         CCAnimation animation = CCAnimation.animation("blueZambie", 0.2f);
-
         for(int i =1 ; i<= 7; i++){
             animation.addFrame("level2boss_00"+i+".png");
         }
-
-
         CCAnimate scrPprAction = CCAnimate.action(1.0f, animation, false);
-        //CCSequence moveAround = getOneRoundMove(3.0f, 800f);
-        //CCSpawn spawn = CCSpawn.actions(scrPprAction, moveAround);
         CCRepeatForever repeatMove = CCRepeatForever.action(scrPprAction);
         return repeatMove;
     }

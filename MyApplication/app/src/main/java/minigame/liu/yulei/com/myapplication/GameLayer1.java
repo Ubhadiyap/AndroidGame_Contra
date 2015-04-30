@@ -22,6 +22,7 @@ import java.util.Random;
  */
 public class GameLayer1 extends GameLayer{
     CCSprite player;
+    CCSprite playerTank;
     CCSprite level1Boss;
     CCProgressTimer bossHealthBar;
 
@@ -30,10 +31,10 @@ public class GameLayer1 extends GameLayer{
     CCDirector director;
     final int GAME_LEVEL = 1;
 
+    ArrayList<CCSprite> coinsArray;
 
-    //projectile array
-   // ArrayList<CCSprite> projectileArray;
-    //monster array
+    Random random;
+
     ArrayList<CCSprite> monsterArray;
     //buttons Array
     ArrayList<CCSprite> buttons;
@@ -54,7 +55,9 @@ public class GameLayer1 extends GameLayer{
         projectileArray = new ArrayList<CCSprite>();
         monsterArray = new ArrayList<CCSprite>();
         bossProjectiles = new ArrayList<>();
+        coinsArray = new ArrayList<>();
 
+        random = new Random();
 
         buttons = UILayout.getButtonsList();
         //add control buttons
@@ -69,7 +72,6 @@ public class GameLayer1 extends GameLayer{
         player = Heros.getHero(GAME_START_HEIGHT);
         this.addChild(player, 0);
 
-
         healthBar =UILayout.getHealthBar(200,1000);
         //add health bar
         addChild(healthBar,17);
@@ -82,9 +84,22 @@ public class GameLayer1 extends GameLayer{
 
         director = CCDirector.sharedDirector();
 
+        //add coins
+        Random random = new Random();
+        for(int i =1; i <= 10; i++) {
+            CCSprite coin = Pickup.getCoin();
+            float r = 0.5f + 0.5f*random.nextFloat();
+
+            //backgroundNode.addChild(coin, 2, 1.0f, 1.0f, 100f * i, 800 * r);
+            backgroundNode.addChild(coin,2,1.0f,1.0f,600f*i,800f*r);
+            coinsArray.add(coin);
+        }
+
+        playerTank = Heros.getTankHero(GAME_START_HEIGHT);
+        backgroundNode.addChild(playerTank,2,1.0f,1.0f,7000f,GAME_START_HEIGHT+120);
+
         this.schedule("update");
         this.schedule("addDynamicMonster",5);
-
         this.schedule("addStaticMonster",5);
         this.schedule("addBoss",3);
 
@@ -97,14 +112,12 @@ public class GameLayer1 extends GameLayer{
     }
 
 
-
     @Override
     public boolean ccTouchesMoved(MotionEvent event) {
 
         PlayerControl.touchMoved(player,backgroundNode,event,buttons);
         return super.ccTouchesMoved(event);
     }
-
 
 
     public void update(float dt){
@@ -142,8 +155,12 @@ public class GameLayer1 extends GameLayer{
                     this.addChild(ParticleSystem.getFire(position.x, position.y), 5);
                     System.out.println(position.x+"_______"+ position.y);
                     //monster.removeSelf();
-                    monster.removeSelf();
-                    monIterator.remove();
+                    float r = random.nextFloat();
+                    if(r > 0.6f){
+                        monster.removeSelf();
+                        monIterator.remove();
+                    }
+
                     projectile.removeSelf();
                     projectIterator.remove();
                     score += 10;
@@ -182,15 +199,52 @@ public class GameLayer1 extends GameLayer{
                 }
             }
         }
+        //coin
+        Iterator<CCSprite> coinsIter = coinsArray.iterator();
+        while(coinsIter.hasNext()){
+            CCSprite monster = coinsIter.next();
+            CGPoint monsterAbsoPosition = monster.convertToWorldSpace(0, 0);
+            CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (monster.getContentSize().width / 2.0f),
+                    monsterAbsoPosition.y - (monster.getContentSize().height / 2.0f),
+                    monster.getContentSize().width,
+                    monster.getContentSize().height);
+            if(CGRect.intersects(monsterRect, playerRect) ){
+                coinsArray.remove(monster);
+                monster.removeSelf();
+                score += 50;
+                scoreLabel.setString("Score: " + score);
+            }
+        }
+
+        //gettank
+        CGPoint monsterAbsoPosition = playerTank.convertToWorldSpace(0, 0);
+        CGRect monsterRect = CGRect.make(monsterAbsoPosition.x - (playerTank.getContentSize().width / 2.0f),
+                monsterAbsoPosition.y - (playerTank.getContentSize().height / 2.0f),
+                playerTank.getContentSize().width,
+                playerTank.getContentSize().height);
+        if(CGRect.intersects(monsterRect, playerRect) ){
+
+            playerTank.removeSelf();
+            player.stopAllActions();
+            player.runAction(Actions.playerTankAnimation());
+            player.setPosition(CGPoint.ccp(player.getPosition().x,90+GAME_START_HEIGHT));
+            score += 50;
+            scoreLabel.setString("Score: " + score);
+        }
+
     }
 
     public void addDynamicMonster(float dt) {
-        CCSprite prite = MonsterFactory.getPirate(this.GAME_START_HEIGHT);
-        this.addChild(prite);
-        monsterArray.add(prite);
-        CCSprite zambie = MonsterFactory.getBlueZambie(this.GAME_START_HEIGHT);
-        this.addChild(zambie);
-        monsterArray.add(zambie);
+        if(random.nextFloat()>0.6){
+            CCSprite prite = MonsterFactory.getPirate(this.GAME_START_HEIGHT);
+            this.addChild(prite);
+            monsterArray.add(prite);
+        }
+        if(random.nextFloat() < 0.4) {
+            CCSprite zambie = MonsterFactory.getBlueZambie(this.GAME_START_HEIGHT);
+            this.addChild(zambie);
+            monsterArray.add(zambie);
+        }
     }
     public void addBoss(float dt){
         if(backgroundNode.getPosition().x < -10000){
@@ -204,6 +258,8 @@ public class GameLayer1 extends GameLayer{
             this.schedule("bossCollisionDetection");
         }
     }
+
+
 
     public void bossAttack(float dt){
         float x =level1Boss.getPosition().x;

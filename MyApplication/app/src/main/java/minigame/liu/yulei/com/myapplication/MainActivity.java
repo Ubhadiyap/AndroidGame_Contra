@@ -36,12 +36,8 @@ public class MainActivity extends Activity {
         //set FPS value, time need to per zhen;
         director.setAnimationInterval(1/300.0);
 
-
         //create scene object
         CCScene scene = CCScene.node();
-
-
-
 
         //create layer
         GameMenu gameLayer = GameMenu.getEntryMenu();

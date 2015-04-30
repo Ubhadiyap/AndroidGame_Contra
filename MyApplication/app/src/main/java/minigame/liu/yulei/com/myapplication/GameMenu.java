@@ -126,6 +126,7 @@ public class GameMenu extends CCLayer{
         gameMenu.addChild(menu);
         return gameMenu;
     }
+
     @Override
     public boolean ccTouchesEnded(MotionEvent event) {
         this.setIsTouchEnabled(true);

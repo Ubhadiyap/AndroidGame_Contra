@@ -24,16 +24,11 @@ public class GameLayer4 extends GameLayer{
     CCSprite player;
     CCSprite level1Boss;
     CCProgressTimer bossHealthBar;
-    CCSprite landMonster1;
-    CCSprite landMonster2;
-    CCSprite back;
     CCParallaxNode backgroundNode;
     CCProgressTimer healthBar;
     CCDirector director;
     final int GAME_LEVEL = 4;
 
-    //projectile array
-    //ArrayList<CCSprite> projectileArray;
     //monster array
     ArrayList<CCSprite> monsterArray;
     //buttons Array
@@ -81,12 +76,10 @@ public class GameLayer4 extends GameLayer{
         this.addChild(backgroundNode, -1);
 
         monsterArray = background.getMonsterArray();
-
         director = CCDirector.sharedDirector();
 
         this.schedule("update");
         this.schedule("addDynamicMonster",5);
-
         this.schedule("addStaticMonster",5);
         this.schedule("addBoss",3);
 

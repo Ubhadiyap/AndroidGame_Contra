@@ -17,24 +17,28 @@ public class UILayout {
 		CCSprite jumpButton = CCSprite.sprite("jumpW.png");
 		CCSprite shootButton = CCSprite.sprite("shootW.png");
 		CCSprite pauseButton = CCSprite.sprite("pauseButton.png");
+        CCSprite menuButton = CCSprite.sprite("menu-button.png");
 		
 		CGPoint LBPosition = CGPoint.ccp(250, 150);
 		CGPoint RBPosition = CGPoint.ccp(750, 150);
 		CGPoint JBPosition = CGPoint.ccp(1300, 150);
 		CGPoint SBPosition = CGPoint.ccp(1650, 150);
-		CGPoint PBPosition = CGPoint.ccp(1000, 150);
+		CGPoint PBPosition = CGPoint.ccp(1000, 200);
+        CGPoint MBPosition = CGPoint.ccp(1000, 50);
 		
 		leftButton.setPosition(LBPosition);
 		rightButton.setPosition(RBPosition);
 		jumpButton.setPosition(JBPosition);
 		shootButton.setPosition(SBPosition);
 		pauseButton.setPosition(PBPosition);
+        menuButton.setPosition(MBPosition);
 
 		buttons.add(leftButton);
 		buttons.add(rightButton);
 		buttons.add(jumpButton);
 		buttons.add(shootButton);
 		buttons.add(pauseButton);
+        buttons.add(menuButton);
 		
 		return buttons;
 	}

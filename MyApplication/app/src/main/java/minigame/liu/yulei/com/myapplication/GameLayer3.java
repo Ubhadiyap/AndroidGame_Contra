@@ -31,16 +31,11 @@ public class GameLayer3 extends GameLayer{
     CCSprite player;
     CCSprite level1Boss;
     CCProgressTimer bossHealthBar;
-    CCSprite landMonster1;
-    CCSprite landMonster2;
-    CCSprite back;
     CCParallaxNode backgroundNode;
     CCProgressTimer healthBar;
     CCDirector director;
     final int GAME_LEVEL = 3;
 
-    //projectile array
-    //ArrayList<CCSprite> projectileArray;
     //monster array
     ArrayList<CCSprite> monsterArray;
     //buttons Array
